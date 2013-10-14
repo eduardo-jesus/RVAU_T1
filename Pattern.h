@@ -9,6 +9,12 @@ public:
     Pattern();
     Pattern(std::string, double, double[]);
     ~Pattern();
+
+    void setName(std::string);
+    std::string getName();
+    void setWidth(double);
+    double getWidth();
+
 private:
     int id_;
     std::string name_;
