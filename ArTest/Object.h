@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Vector3.h"
+
 class Object {
 public:
     Object();
@@ -15,6 +17,6 @@ public:
 protected:
     Vector3 position_;
     Vector3 scale_;
-    Matrix transform_;
+    //Matrix transform_;
 };
 
