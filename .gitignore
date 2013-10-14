@@ -8,9 +8,10 @@
 
 # Build results
 
-[Dd]ebug/
-[Rr]elease/**/*
-![Rr]elease/*.dll
+Debug/
+Release/*
+!Release/*.dll
+!Release/Data/
 
 x64/
 build/
