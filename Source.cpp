@@ -113,9 +113,12 @@ static void mainLoop(void) {
         cleanup();
         exit(0);
     }
-    if (marker_num == 0) {
+    /*if (marker_num == 0) {
+        argDispImage(dataPtr, 0, 0);
+        arVideoCapNext();
+        argSwapBuffers();
         return;
-    }
+    }*/
 
     argDrawMode2D();
     if (!arDebug) {
