@@ -1,2 +1,14 @@
 ArTest/ArTest.opensdf
 ArTest/ArTest.sdf
+ArTest/Release/ArTest.exe
+ArTest/Release/ArTest.lastbuildstate
+ArTest/Release/ArTest.log
+ArTest/Release/ArTest.pdb
+ArTest/Release/CL.read.1.tlog
+ArTest/Release/CL.write.1.tlog
+ArTest/Release/Source.obj
+ArTest/Release/cl.command.1.tlog
+ArTest/Release/link.command.1.tlog
+ArTest/Release/link.read.1.tlog
+ArTest/Release/link.write.1.tlog
+ArTest/Release/vc110.pdb
