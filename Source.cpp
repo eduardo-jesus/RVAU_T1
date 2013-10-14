@@ -42,13 +42,27 @@ double          patt_width     = 80.0;
 double          patt_center[2] = {0.0, 0.0};
 double          patt_trans[3][4];
 
+//A path
+char *a_name = "Data/multi/patt.a";
+int a_id;
+double a_width = 49.0;
+double a_center[2] = {0.0, 0.0};
+double a_trans[3][4];
+
+//F path
+char *f_name = "Data/multi/patt.f";
+int f_id;
+double f_width = 49.0;
+double f_center[2] = {0.0, 0.0};
+double f_trans[3][4];
+
 static void init(void);
 static void cleanup(void);
 static void keyEvent(unsigned char key, int x, int y);
 static void mainLoop(void);
 static void draw(double trans1[3][4], double trans2[3][4], int mode);
-static void draw();
-
+static void draw(int patt = 0);
+static void drawRect(double x, double y, double z, double gl_para[16]);
 
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
@@ -114,10 +128,10 @@ static void mainLoop(void) {
         exit(0);
     }
     /*if (marker_num == 0) {
-        argDispImage(dataPtr, 0, 0);
-        arVideoCapNext();
-        argSwapBuffers();
-        return;
+    argDispImage(dataPtr, 0, 0);
+    arVideoCapNext();
+    argSwapBuffers();
+    return;
     }*/
 
     argDrawMode2D();
@@ -155,24 +169,55 @@ static void mainLoop(void) {
     glClearDepth(1.0);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    if ((err = arMultiGetTransMat(marker_info, marker_num, config)) >= 0 && err <= 100.0) {
-        for(i = 0; i < config->marker_num; ++i) {
-            if (config->marker[i].visible >= 0) {
-                draw(config->trans, config->marker[i].trans, 0);
-            } else {
-                draw(config->trans, config->marker[i].trans, 1);
-            }
+    /*if ((err = arMultiGetTransMat(marker_info, marker_num, config)) >= 0 && err <= 100.0) {
+    for(i = 0; i < config->marker_num; ++i) {
+    if (config->marker[i].visible >= 0) {
+    draw(config->trans, config->marker[i].trans, 0);
+    } else {
+    draw(config->trans, config->marker[i].trans, 1);
+    }
+    }
+    }*/
+
+    int a_index = -1;
+    int f_index = -1;
+
+    for (int j = 0; j < marker_num; ++j) {
+        /*if (patt_id == marker_info[j].id) {
+            arGetTransMat(&marker_info[j], patt_center, patt_width, patt_trans);
+            draw();
+        } else */if(a_id == marker_info[j].id){
+            a_index = j;
+            arGetTransMat(&marker_info[j], a_center, a_width, patt_trans);
+            draw();
+        } else if(f_id == marker_info[j].id){
+            f_index = j;
+            arGetTransMat(&marker_info[j], f_center, f_width, patt_trans);
+            draw(1);
+        } else {
+            //printf("wrong marker: %d\n", marker_info[j].id);
         }
     }
 
-    for (int j = 0; j < marker_num; ++j) {
-        if (patt_id == marker_info[j].id) {
-            printf("marker id: %d\n", j);
-            arGetTransMat(&marker_info[j], patt_center, patt_width, patt_trans);
-            draw();
-        } else {
-            printf("wrong marker: %d\n", marker_info[j].id);
-        }
+    if(a_index != -1 && f_index != -1){
+        arGetTransMat(&marker_info[a_index], a_center, a_width, a_trans);
+        arGetTransMat(&marker_info[f_index], f_center, f_width, f_trans);
+
+        double wmat1[3][4], wmat2[3][4];
+
+        arUtilMatInv(a_trans, wmat1);
+        arUtilMatMul(wmat1, f_trans, wmat2);
+
+        double af_dist[3];
+        af_dist[0] = wmat2[0][3];
+        af_dist[1] = wmat2[1][3];
+        af_dist[2] = wmat2[2][3];
+
+        printf("distance A-F: %f %f %f\n",af_dist[0], af_dist[1], af_dist[2]);
+
+        double gl_param[16];
+        argConvGlpara(a_trans, gl_param);
+        drawRect(af_dist[0], af_dist[1], af_dist[2], gl_param);
     }
 
     argSwapBuffers();
@@ -201,13 +246,23 @@ static void init(void) {
     printf("*** Camera Parameter ***\n");
     arParamDisp(&cparam);
 
-    if ((config = arMultiReadConfigFile(config_name)) == NULL) {
-        printf("config data load error !!\n");
-        exit(0);
-    }
+    /* if ((config = arMultiReadConfigFile(config_name)) == NULL) {
+    printf("config data load error !!\n");
+    exit(0);
+    }*/
 
     if ((patt_id = arLoadPatt(patt_name)) < 0) {
         printf("pattern load error !!\n");
+        exit(0);
+    }
+
+    if ((a_id = arLoadPatt(a_name)) < 0) {
+        printf("pattern a load error !!\n");
+        exit(0);
+    }
+
+    if ((f_id = arLoadPatt(f_name)) < 0) {
+        printf("pattern f load error !!\n");
         exit(0);
     }
 
@@ -279,7 +334,7 @@ static void draw(double trans1[3][4], double trans2[3][4], int mode) {
     glDisable( GL_DEPTH_TEST );
 }
 
-static void draw() {
+static void draw(int patt) {
     double    gl_para[16];
     GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
     GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
@@ -287,14 +342,19 @@ static void draw() {
     GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0};
     GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
     GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
-    
+
+    if(patt != 0) {
+        mat_ambient[1] = 1.0;
+        mat_flash[1] = 1.0;
+    }
+
     argDrawMode3D();
     argDraw3dCamera( 0, 0 );
     glClearDepth( 1.0 );
     glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
-    
+
     /* load the camera transformation matrix */
     argConvGlpara(patt_trans, gl_para);
     glMatrixMode(GL_MODELVIEW);
@@ -309,8 +369,50 @@ static void draw() {
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
     glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
     glMatrixMode(GL_MODELVIEW);
-    glTranslatef( 0.0, 0.0, 25.0 );
-    glutSolidCube(50.0);
+    glTranslatef( 0.0, 0.0, 24.5 );
+    glutSolidCube(49.0);
+    glDisable( GL_LIGHTING );
+
+    glDisable( GL_DEPTH_TEST );
+}
+
+static void drawRect(double x, double y, double z, double gl_para[16]) {
+    GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
+    GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
+    GLfloat   mat_flash_shiny[] = {50.0};
+    GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0};
+    GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
+    GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
+
+    argDrawMode3D();
+    argDraw3dCamera( 0, 0 );
+    glClearDepth( 1.0 );
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    /* load the camera transformation matrix */
+    glMatrixMode(GL_MODELVIEW);
+    glLoadMatrixd( gl_para );
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+    glMatrixMode(GL_MODELVIEW);
+
+    glBegin(GL_POLYGON);
+    glNormal3d(0,0,1);
+    glVertex3d(0,0,0);
+    glVertex3d(0,y,z);
+    glVertex3d(x,y,z);
+    glVertex3d(x,0,0);
+    glEnd();
+    
     glDisable( GL_LIGHTING );
 
     glDisable( GL_DEPTH_TEST );
