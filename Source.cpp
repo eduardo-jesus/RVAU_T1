@@ -18,6 +18,7 @@
 #include <AR/ar.h>
 #include <AR/arMulti.h>
 
+#include "Pattern.h"
 /* set up the video format globals */
 
 #ifdef _WIN32
@@ -62,7 +63,7 @@ static void keyEvent(unsigned char key, int x, int y);
 static void mainLoop(void);
 static void draw(double trans1[3][4], double trans2[3][4], int mode);
 static void draw(int patt = 0);
-static void drawRect(double x, double y, double z, double gl_para[16]);
+static void drawRect(double x, double y, double gl_para[16]);
 
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
@@ -184,40 +185,29 @@ static void mainLoop(void) {
 
     for (int j = 0; j < marker_num; ++j) {
         /*if (patt_id == marker_info[j].id) {
-            arGetTransMat(&marker_info[j], patt_center, patt_width, patt_trans);
-            draw();
-        } else */if(a_id == marker_info[j].id){
+        arGetTransMat(&marker_info[j], patt_center, patt_width, patt_trans);
+        draw();
+        } else */
+        if(a_id == marker_info[j].id){
             a_index = j;
-            arGetTransMat(&marker_info[j], a_center, a_width, patt_trans);
-            draw();
+            
         } else if(f_id == marker_info[j].id){
             f_index = j;
-            arGetTransMat(&marker_info[j], f_center, f_width, patt_trans);
-            draw(1);
-        } else {
-            //printf("wrong marker: %d\n", marker_info[j].id);
+            
         }
     }
 
     if(a_index != -1 && f_index != -1){
-        arGetTransMat(&marker_info[a_index], a_center, a_width, a_trans);
-        arGetTransMat(&marker_info[f_index], f_center, f_width, f_trans);
+ 
+        Pattern a = Pattern(a_name, a_width, a_center, marker_info[a_index]);
+        Pattern f = Pattern(f_name, f_width, f_center, marker_info[f_index]);
 
-        double wmat1[3][4], wmat2[3][4];
-
-        arUtilMatInv(a_trans, wmat1);
-        arUtilMatMul(wmat1, f_trans, wmat2);
-
-        double af_dist[3];
-        af_dist[0] = wmat2[0][3];
-        af_dist[1] = wmat2[1][3];
-        af_dist[2] = wmat2[2][3];
-
-        printf("distance A-F: %f %f %f\n",af_dist[0], af_dist[1], af_dist[2]);
+        Vector3 dist = Pattern::distance(a, f);
 
         double gl_param[16];
-        argConvGlpara(a_trans, gl_param);
-        drawRect(af_dist[0], af_dist[1], af_dist[2], gl_param);
+
+        argConvGlpara(a.getTrans(), gl_param);
+        drawRect(dist.x, dist.y, gl_param);
     }
 
     argSwapBuffers();
@@ -376,7 +366,7 @@ static void draw(int patt) {
     glDisable( GL_DEPTH_TEST );
 }
 
-static void drawRect(double x, double y, double z, double gl_para[16]) {
+static void drawRect(double x, double y, double gl_para[16]) {
     GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
     GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
     GLfloat   mat_flash_shiny[] = {50.0};
@@ -408,11 +398,11 @@ static void drawRect(double x, double y, double z, double gl_para[16]) {
     glBegin(GL_POLYGON);
     glNormal3d(0,0,1);
     glVertex3d(0,0,0);
-    glVertex3d(0,y,z);
-    glVertex3d(x,y,z);
+    glVertex3d(0,y,0);
+    glVertex3d(x,y,0);
     glVertex3d(x,0,0);
     glEnd();
-    
+
     glDisable( GL_LIGHTING );
 
     glDisable( GL_DEPTH_TEST );
