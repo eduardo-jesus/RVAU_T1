@@ -17,13 +17,19 @@ public:
     void setWidth(double);
     double getWidth();
 
+    void setId(int);
+    int getId();
     double (& getTrans()) [3][4];
     void setInfo(ARMarkerInfo);
     void setTransMat(); //Set trans_ using arGetTransMat. info_ must not be null 
 
     static Vector3 distance(Pattern, Pattern);
-    
-    
+    static double angle(Pattern, Pattern);
+
+    void setVisible(bool);
+    bool changeVisibility();
+    bool isVisible();
+        
 private:
     int id_;
     std::string name_;
@@ -31,5 +37,7 @@ private:
     double center_[2];
     double trans_[3][4];
     ARMarkerInfo info_;
+
+    bool visible_;
 };
 
