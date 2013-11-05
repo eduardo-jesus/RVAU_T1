@@ -6,13 +6,12 @@
 #include "AR\video.h"
 #include "AR\gsub.h"
 
-Game::Game(void)
-{
+Game::Game(void) {
     thresh_ = 100;
+    board_ = Board();
 }
 
-Game::~Game(void)
-{
+Game::~Game(void) {
 }
 
 void Game::init() {
@@ -21,7 +20,6 @@ void Game::init() {
 
     char *cparam_name    = "Data/camera_para.dat";
     ARParam cparam;
-
 
     ARParam  wparam;
 
@@ -60,6 +58,22 @@ void Game::init() {
     arImageProcMode = AR_IMAGE_PROC_IN_HALF;
     argDrawMode     = AR_DRAW_BY_TEXTURE_MAPPING;
     argTexmapMode   = AR_DRAW_TEXTURE_HALF_IMAGE;
+
+    GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
+    GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
+    GLfloat   mat_flash_shiny[] = {50.0};
+    //GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0}; // Must be defined when drawing the objects
+    GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
+    GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    //glLightfv(GL_LIGHT0, GL_POSITION, light_position); // Must be defined when drawing the objects
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
 }
 
 void Game::loadPatterns() {
@@ -141,12 +155,51 @@ int Game::detectMarkers() {
             Pattern& pattern = patterns_[id];
 
             pattern.setVisible(true);
+            visible_patterns_.push_back(&pattern);
             pattern.setInfo(marker_info_[i]);
-            printf("[Game::detectMarkers] pattern %s detected\n", pattern.getName().c_str());
+            pattern.setTransMat();
+            //printf("[Game::detectMarkers] pattern %s detected\n", pattern.getName().c_str());
         }
     }
 
+    updateBoardDimensions();
+    updateCannon();
+
     return marker_num;
+}
+
+void Game::resetVisiblePatterns() {
+    for(unsigned int i = 0; i < visible_patterns_.size(); ++i) {
+        visible_patterns_[i]->changeVisibility();
+    }
+
+    visible_patterns_.clear();
+}
+
+void Game::updateBoardDimensions() {
+    if(patterns_[LEFT_TOP_CORNER].isVisible() && patterns_[RIGHT_BOTTOM_CORNER].isVisible()) {
+        Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[RIGHT_BOTTOM_CORNER]);
+        board_.setDimensions(dist.x, dist.y);
+    }
+}
+
+void Game::updateCannon() {
+    if(patterns_[CANNON].isVisible()) {
+
+        if(patterns_[ROTATE_CANNON].isVisible()) {
+            double angle = Pattern::angle(patterns_[CANNON], patterns_[ROTATE_CANNON]);
+            cannon_.setAngle(angle);
+
+            if(!cannon_.isShooting()) {
+                cannon_.setCanShoot(true);
+            }
+        }
+        else if(cannon_.canShoot()) {
+            //cannon_.setShooting(true);
+            cannon_.setCanShoot(false);
+            cannon_.shoot();
+        }
+    }
 }
 
 void Game::mainLoop() {
@@ -158,35 +211,13 @@ void Game::mainLoop() {
     int marker_num = detectMarkers();
 
     argDrawMode2D();
-    if (!arDebug) {
-        argDispImage(data_ptr_, 0, 0);
-
-        glColor3f(1.0, 0.0, 0.0);
-        glLineWidth(6.0);
-        for (int i = 0; i < marker_num; ++i) {
-            argDrawSquare(marker_info_[i].vertex, 0, 0);
-        }
-        glLineWidth( 1.0 );
-
-    } else {
-        argDispImage(data_ptr_, 1, 1);
-        if(arImageProcMode == AR_IMAGE_PROC_IN_HALF) {
-            argDispHalfImage(arImage, 0, 0);
-        } else {
-            argDispImage(arImage, 0, 0);
-        }
-
-        glColor3f(1.0, 0.0, 0.0);
-        glLineWidth(6.0);
-        for(int i = 0; i < marker_num; ++i) {
-            argDrawSquare(marker_info_[i].vertex, 0, 0);
-        }
-        glLineWidth( 1.0 );
-    }
+    argDispImage(data_ptr_, 0, 0);
 
     arVideoCapNext();
 
     drawScene();
+
+    resetVisiblePatterns();
 
     argSwapBuffers();
 }
@@ -196,74 +227,41 @@ void Game::drawScene() {
     argDraw3dCamera(0, 0);
     glClearDepth(1.0);
     glClear(GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    glMatrixMode(GL_MODELVIEW);
+    glEnable(GL_LIGHTING);
 
     Pattern& cannon = patterns_[CANNON];
-    Pattern& rotate = patterns_[ROTATE_CANNON];
     Pattern& left_top = patterns_[LEFT_TOP_CORNER];
     Pattern& right_bottom = patterns_[RIGHT_BOTTOM_CORNER];
 
     if(cannon.isVisible()) {
-        cannon.changeVisibility();
-        cannon.setTransMat();
-
-        double angle = 0;
-
-        if(rotate.isVisible()) {
-            rotate.changeVisibility();
-            rotate.setTransMat();
-
-            angle = Pattern::angle(cannon, rotate);
-        }
-
         double matrix[16];
         argConvGlpara(cannon.getTrans(), matrix);
-        drawCone(matrix,angle);
+        drawCone(matrix,cannon_.getAngle());
     }
 
     if(left_top.isVisible() && right_bottom.isVisible()) {
-        left_top.changeVisibility();
-        left_top.setTransMat();
-
-        right_bottom.changeVisibility();
-        right_bottom.setTransMat();
-
-        Vector3 dist = Pattern::distance(left_top, right_bottom);
-
         double gl_param[16];
-
         argConvGlpara(left_top.getTrans(), gl_param);
-        drawRect(dist.x, dist.y, gl_param);
+        drawRect(board_.getWidth(), board_.getHeight(), gl_param);
     }
+
+    glDisable( GL_LIGHTING );
+    glDisable( GL_DEPTH_TEST );
+}
+
+void Game::updateAnimations() {
+    printf("anim\n");
 }
 
 void Game::drawRect(double x, double y, double gl_para[16]) {
-    GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash_shiny[] = {50.0};
-    GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0};
-    GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
-    GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
-
-    argDrawMode3D();
-    argDraw3dCamera( 0, 0 );
-    glClearDepth( 1.0 );
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-
-    /* load the camera transformation matrix */
-    glMatrixMode(GL_MODELVIEW);
     glLoadMatrixd( gl_para );
 
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    GLfloat light_position[]  = {100.0,-200.0,200.0,0.0};
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-    glMatrixMode(GL_MODELVIEW);
 
     glBegin(GL_POLYGON);
     glNormal3d(0,0,1);
@@ -272,46 +270,15 @@ void Game::drawRect(double x, double y, double gl_para[16]) {
     glVertex3d(x,y,0);
     glVertex3d(x,0,0);
     glEnd();
-
-    glDisable( GL_LIGHTING );
-
-    glDisable( GL_DEPTH_TEST );
 }
 
 void Game::drawCone(double matrix[16], double angle) {
-    GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash_shiny[] = {50.0};
-    GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0};
-    GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
-    GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
-
-    argDrawMode3D();
-    argDraw3dCamera( 0, 0 );
-    glClearDepth( 1.0 );
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-
-    /* load the camera transformation matrix */
-    glMatrixMode(GL_MODELVIEW);
     glLoadMatrixd( matrix );
 
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    GLfloat light_position[]  = {100.0,-200.0,200.0,0.0};
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-    glMatrixMode(GL_MODELVIEW);
 
     glRotated(angle, 0,0,1);
     glRotated(90.0,1,0,0);
     glutSolidCone(20, 200, 20, 20);
-
-    glDisable( GL_LIGHTING );
-
-    glDisable( GL_DEPTH_TEST );
 }
