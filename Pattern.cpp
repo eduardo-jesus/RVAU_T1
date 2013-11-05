@@ -5,6 +5,15 @@
 Pattern::Pattern() {
 }
 
+Pattern::Pattern(std::string name, double width) {
+    name_ = name;
+    width_ = width;
+    center_[0] = 0;
+    center_[1] = 0;
+
+    visible_ = false;
+}
+
 Pattern::Pattern(std::string name, double width, double center[]) {
     name_ = name;
     width_ = width;
@@ -76,7 +85,7 @@ double Pattern::angle(Pattern p1, Pattern p2) {
     arUtilMatInv(p1.trans_, mat1);
     arUtilMatMul(mat1, p2.trans_, mat2);
 
-    return atan2(mat2[0][1],mat2[0][0]) * 180/3.14;
+    return - atan2(mat2[0][1],mat2[0][0]) * 180/3.14;
 }
 
 void Pattern::setVisible(bool) {

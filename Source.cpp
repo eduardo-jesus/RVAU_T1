@@ -19,6 +19,7 @@
 #include <AR/arMulti.h>
 
 #include "Pattern.h"
+#include "Object.h"
 /* set up the video format globals */
 
 #ifdef _WIN32
@@ -102,6 +103,7 @@ static void draw(Pattern patt);
 static void drawRect(double x, double y, double gl_para[16]);
 static void drawCone(double matrix[16], double angle);
 
+/*
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
     init();
@@ -109,7 +111,7 @@ int main(int argc, char **argv) {
     arVideoCapStart();
     argMainLoop(NULL, keyEvent, mainLoop);
     return (0);
-}
+}*/
 
 static void keyEvent(unsigned char key, int x, int y) {
     /* quit if the ESC key is pressed */

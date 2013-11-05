@@ -8,6 +8,7 @@
 class Pattern {
 public:
     Pattern();
+    Pattern(std::string name, double width);
     Pattern(std::string, double, double[]);
     Pattern(std::string, double, double[], ARMarkerInfo);
     ~Pattern();

@@ -1,6 +1,6 @@
 #include "Object.h"
 
-//#include <GL/gl.h>
+#include <GL/glut.h>
 
 Object::Object() {
 }
@@ -10,10 +10,10 @@ Object::~Object() {
 }
 
 void Object::draw() {
-    /*glPushMatrix();
+    glPushMatrix();
     
     glEnd();
-    glPopMatrix();*/
+    glPopMatrix();
 }
 
 void Object::update() {
