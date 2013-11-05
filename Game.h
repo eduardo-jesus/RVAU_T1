@@ -6,6 +6,7 @@
 #include "Pattern.h"
 #include "Board.h"
 #include "Cannon.h"
+#include "Player.h"
 
 class Game
 {

@@ -247,6 +247,12 @@ void Game::drawScene() {
         double gl_param[16];
         argConvGlpara(left_top.getTrans(), gl_param);
         drawRect(board_.getWidth(), board_.getHeight(), gl_param);
+
+        if(patterns_[SPAWN].isVisible()) {
+            Vector3 dist = Pattern::distance(left_top, patterns_[SPAWN]);
+            Player p = Player(dist.x, dist.y);
+            p.drawPlayer();
+        }
     }
 
     glDisable( GL_LIGHTING );
