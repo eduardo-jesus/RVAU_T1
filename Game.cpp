@@ -8,7 +8,10 @@
 
 Game::Game(void) {
     thresh_ = 100;
+    anim_millis_ = 30;
+    previous_clock_ = clock();
     board_ = Board();
+    player_ = Player();
 }
 
 Game::~Game(void) {
@@ -18,7 +21,8 @@ void Game::init() {
     char *vconf = "Data\\WDM_camera_flipV.xml";
     int xsize, ysize;
 
-    char *cparam_name    = "Data/camera_para.dat";
+    char *cparam_name = "Data/camera_para.dat";
+    //char *cparam_name = "Data/camera_para_busto.dat";
     ARParam cparam;
 
     ARParam  wparam;
@@ -164,6 +168,7 @@ int Game::detectMarkers() {
 
     updateBoardDimensions();
     updateCannon();
+    updatePlayer();
 
     return marker_num;
 }
@@ -199,6 +204,13 @@ void Game::updateCannon() {
             cannon_.setCanShoot(false);
             cannon_.shoot();
         }
+    }
+}
+
+void Game::updatePlayer() {
+    if(patterns_[LEFT_TOP_CORNER].isVisible() && patterns_[SPAWN].isVisible() && !player_.isAlive()) {
+        Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[SPAWN]);
+        player_ = Player(dist.x, dist.y);
     }
 }
 
@@ -248,10 +260,14 @@ void Game::drawScene() {
         argConvGlpara(left_top.getTrans(), gl_param);
         drawRect(board_.getWidth(), board_.getHeight(), gl_param);
 
-        if(patterns_[SPAWN].isVisible()) {
+        /*if(patterns_[SPAWN].isVisible()) {
             Vector3 dist = Pattern::distance(left_top, patterns_[SPAWN]);
             Player p = Player(dist.x, dist.y);
             p.drawPlayer();
+        }*/
+
+        if(player_.isAlive()) {
+            player_.drawPlayer();
         }
     }
 
@@ -260,7 +276,15 @@ void Game::drawScene() {
 }
 
 void Game::updateAnimations() {
-    printf("anim\n");
+    //printf("anim\n");
+    clock_t current_clock = clock();
+    double elapsed_time = (current_clock - previous_clock_) / (double) CLOCKS_PER_SEC;
+
+    if(player_.isAlive()) {
+        player_.updatePlayerAnimation(elapsed_time);
+    }
+    
+    previous_clock_ = current_clock;
 }
 
 void Game::drawRect(double x, double y, double gl_para[16]) {

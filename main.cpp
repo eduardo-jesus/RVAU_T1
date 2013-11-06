@@ -26,7 +26,7 @@ void mainLoop(void) {
 
 void updateAnimations(int dummy) {
     game.updateAnimations();
-    glutTimerFunc(1000, updateAnimations,0);
+    glutTimerFunc(30, updateAnimations,0);
 }
 
 int main(int argc, char **argv) {
@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     game.init();
 
     arVideoCapStart();
-    //glutTimerFunc(1000, updateAnimations,0);
+    glutTimerFunc(30, updateAnimations,0);
     argMainLoop(NULL, keyEvent, mainLoop);
     return (0);
 }

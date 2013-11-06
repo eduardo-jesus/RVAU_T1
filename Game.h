@@ -2,6 +2,7 @@
 
 #include <map>
 #include <vector>
+#include <ctime>
 
 #include "Pattern.h"
 #include "Board.h"
@@ -28,7 +29,11 @@ private:
 
     Board board_;
     Cannon cannon_;
+    Player player_;
 
+    //animation
+    int anim_millis_;
+    clock_t previous_clock_;
 public:
     Game(void);
     ~Game(void);
@@ -41,6 +46,7 @@ public:
     int detectMarkers();
     void updateBoardDimensions();
     void updateCannon();
+    void updatePlayer();
 
     void mainLoop();
 

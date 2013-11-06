@@ -6,6 +6,8 @@
 Board::Board(void) {
     width_ = 0.0;
     height_ = 0.0;
+
+    visible_ = false;
 }
 
 
@@ -29,4 +31,12 @@ double Board::getWidth() {
 
 double Board::getHeight() {
     return height_;
+}
+
+void Board::setVisible(bool visible) {
+    visible_ = visible;
+}
+
+bool Board::isVisible() {
+    return visible_;
 }

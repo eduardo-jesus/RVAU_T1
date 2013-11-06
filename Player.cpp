@@ -5,6 +5,10 @@
 Player::Player(void) {
     x_ = 0;
     y_ = 0;
+
+    x_speed_ = 25;
+    y_speed_ = 10;
+
     moving_up_ = false;
     moving_down_ = false;
     alive_ = false;
@@ -13,6 +17,10 @@ Player::Player(void) {
 Player::Player(double x, double y) {
     x_ = x;
     y_ = y;
+
+    x_speed_ = 50;
+    y_speed_ = 10;
+
     moving_up_ = false;
     moving_down_ = false;
     alive_ = true;
@@ -76,4 +84,16 @@ void Player::drawPlayer() {
     glutSolidCube(1);
 
     glPopMatrix();
+}
+
+void Player::updatePlayerAnimation(double elapsed_time) {
+    x_ += x_speed_ * elapsed_time;
+
+    if(moving_up_ && !moving_down_) {
+        y_ += y_speed_ * elapsed_time;
+    }
+    else if(moving_down_) {
+        y_ -= y_speed_ * elapsed_time; 
+    }
+
 }

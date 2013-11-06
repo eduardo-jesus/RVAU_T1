@@ -5,6 +5,9 @@ private:
     double x_;
     double y_;
 
+    double x_speed_;
+    double y_speed_;
+
     bool moving_up_;
     bool moving_down_;
     bool alive_;
@@ -25,5 +28,6 @@ public:
     bool isAlive();
 
     void drawPlayer();
+    void updatePlayerAnimation(double elapsed_time);
 };
 
