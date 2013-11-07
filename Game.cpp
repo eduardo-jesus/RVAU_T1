@@ -203,6 +203,7 @@ void Game::updateCannon() {
             //cannon_.setShooting(true);
             cannon_.setCanShoot(false);
             cannon_.shoot();
+            bullet_ = Bullet(0, 0, cannon_.getAngle());
         }
     }
 }
@@ -283,6 +284,10 @@ void Game::updateAnimations() {
     if(player_.isAlive()) {
         player_.updatePlayerAnimation(elapsed_time);
     }
+
+    if(bullet_.isMoving()) {
+        bullet_.updateBulletPosition(elapsed_time);
+    }
     
     previous_clock_ = current_clock;
 }
@@ -308,7 +313,13 @@ void Game::drawCone(double matrix[16], double angle) {
     GLfloat light_position[]  = {100.0,-200.0,200.0,0.0};
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
+    glPushMatrix();
     glRotated(angle, 0,0,1);
-    glRotated(90.0,1,0,0);
+    glRotated(90.0,0,1,0);
     glutSolidCone(20, 200, 20, 20);
+    glPopMatrix();
+
+    if(bullet_.isMoving()) {
+        bullet_.drawBullet();
+    }
 }

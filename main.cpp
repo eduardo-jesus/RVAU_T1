@@ -26,7 +26,7 @@ void mainLoop(void) {
 
 void updateAnimations(int dummy) {
     game.updateAnimations();
-    glutTimerFunc(30, updateAnimations,0);
+    glutTimerFunc(30, updateAnimations, 0);
 }
 
 int main(int argc, char **argv) {

@@ -8,6 +8,7 @@
 #include "Board.h"
 #include "Cannon.h"
 #include "Player.h"
+#include "Bullet.h"
 
 class Game
 {
@@ -30,6 +31,7 @@ private:
     Board board_;
     Cannon cannon_;
     Player player_;
+    Bullet bullet_;
 
     //animation
     int anim_millis_;
