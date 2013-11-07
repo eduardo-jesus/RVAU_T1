@@ -325,7 +325,12 @@ void Game::updateAnimations() {
     double elapsed_time = (current_clock - previous_clock_) / (double) CLOCKS_PER_SEC;
 
     if(player_.isAlive()) {
-        player_.updatePlayerAnimation(elapsed_time);
+        if(!board_.isOnBoard(&player_)) {
+            player_.setAlive(false);
+        }
+        else {
+            player_.updatePlayerAnimation(elapsed_time);
+        }
     }
 
     if(bullet_.isMoving()) {

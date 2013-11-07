@@ -39,3 +39,11 @@ void Board::setVisible(bool visible) {
 bool Board::isVisible() {
     return visible_;
 }
+
+bool Board::isOnBoard(double x, double y) {
+    return !(x < 0 || x > width_ || y > 0 || y < height_);
+}
+
+bool Board::isOnBoard(Object* o) {
+    return isOnBoard(o->getPosition().x, o->getPosition().y);
+}

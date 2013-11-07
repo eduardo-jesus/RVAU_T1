@@ -19,6 +19,11 @@ void Object::update() {
 
 }
 
+
+Vector3 Object::getPosition() {
+    return position_;
+}
+
 double Object::getX() {
     return position_.x;
 }
