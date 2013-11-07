@@ -4,8 +4,8 @@
 
 
 Board::Board(void) {
-    width_ = 0.0;
-    height_ = 0.0;
+    width_ = 250.0;
+    height_ = -100.0;
 
     visible_ = false;
 }

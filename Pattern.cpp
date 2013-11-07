@@ -12,6 +12,7 @@ Pattern::Pattern(std::string name, double width) {
     center_[1] = 0;
 
     visible_ = false;
+    continuous_ = false;
 }
 
 Pattern::Pattern(std::string name, double width, double center[]) {
@@ -67,7 +68,13 @@ void Pattern::setInfo(ARMarkerInfo info) {
 }
 
 void Pattern::setTransMat() {
-    arGetTransMat(&info_, center_, width_, trans_);
+    if(!continuous_) {
+        arGetTransMat(&info_, center_, width_, trans_);
+        continuous_ = true;
+    }
+    else {
+        arGetTransMatCont(&info_, trans_, center_, width_, trans_);
+    }
 }
 
 Vector3 Pattern::distance(Pattern p1, Pattern p2) {
@@ -100,3 +107,12 @@ bool Pattern::changeVisibility() {
 bool Pattern::isVisible() {
     return visible_;
 }
+
+void Pattern::setContinuous(bool continuous) {
+    continuous_ = continuous;
+}
+
+bool Pattern::getContinuous() {
+    return continuous_;
+}
+

@@ -152,10 +152,17 @@ int Game::detectMarkers() {
         exit(0);
     }
 
+    std::map<int, bool> detected;
+    for(std::map<int, Pattern>::iterator it = patterns_.begin(); it != patterns_.end(); ++it) {
+        detected[it->first] = false;
+    }
+
     for(int i = 0; i < marker_num; ++i) {
         int id = marker_info_[i].id;
 
         if(patterns_.find(id) != patterns_.end()) {
+            detected[id] = true;
+            
             Pattern& pattern = patterns_[id];
 
             pattern.setVisible(true);
@@ -163,6 +170,12 @@ int Game::detectMarkers() {
             pattern.setInfo(marker_info_[i]);
             pattern.setTransMat();
             //printf("[Game::detectMarkers] pattern %s detected\n", pattern.getName().c_str());
+        }
+    }
+
+    for(std::map<int, bool>::iterator it = detected.begin(); it != detected.end(); ++it) {
+        if(!it->second) {
+            patterns_[it->first].setContinuous(false);
         }
     }
 
@@ -182,9 +195,16 @@ void Game::resetVisiblePatterns() {
 }
 
 void Game::updateBoardDimensions() {
-    if(patterns_[LEFT_TOP_CORNER].isVisible() && patterns_[RIGHT_BOTTOM_CORNER].isVisible()) {
-        Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[RIGHT_BOTTOM_CORNER]);
-        board_.setDimensions(dist.x, dist.y);
+    if(patterns_[LEFT_TOP_CORNER].isVisible()) {
+        board_.setVisible(true);
+
+        if(patterns_[RIGHT_BOTTOM_CORNER].isVisible()) {
+            Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[RIGHT_BOTTOM_CORNER]);
+            board_.setDimensions(dist.x, dist.y);
+        }
+    }
+    else {
+        board_.setVisible(false);
     }
 }
 
@@ -256,7 +276,7 @@ void Game::drawScene() {
         drawCone(matrix,cannon_.getAngle());
     }
 
-    if(left_top.isVisible() && right_bottom.isVisible()) {
+    if(board_.isVisible()) {
         double gl_param[16];
         argConvGlpara(left_top.getTrans(), gl_param);
         drawRect(board_.getWidth(), board_.getHeight(), gl_param);

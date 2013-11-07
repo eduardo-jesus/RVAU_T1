@@ -12,7 +12,7 @@ Bullet::Bullet(void){
 Bullet::Bullet(double x, double y, double angle) {
     position_ = Vector3(x, y, 20);
     setAngle(angle);
-    speed_ = 10;
+    speed_ = 20;
     moving_ = true;
 }
 
