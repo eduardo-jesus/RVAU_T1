@@ -32,6 +32,10 @@ public:
     void setVisible(bool);
     bool changeVisibility();
     bool isVisible();
+
+    void setContinuous(bool continuous);
+    bool getContinuous();
+
         
 private:
     int id_;
@@ -41,6 +45,7 @@ private:
     double trans_[3][4];
     ARMarkerInfo info_;
 
+    bool continuous_;
     bool visible_;
 };
 

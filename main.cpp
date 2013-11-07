@@ -30,7 +30,6 @@ void updateAnimations(int dummy) {
 }
 
 int main(int argc, char **argv) {
-    printf("New main.cpp");
     glutInit(&argc, argv);
     game.init();
 
