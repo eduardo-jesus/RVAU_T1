@@ -65,6 +65,7 @@ double (& Pattern::getTrans()) [3][4] {
 
 void Pattern::setInfo(ARMarkerInfo info) {
     info_ = info;
+    setTransMat();
 }
 
 void Pattern::setTransMat() {

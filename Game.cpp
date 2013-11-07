@@ -135,7 +135,7 @@ void Game::cleanup() {
 int Game::detectMarkers() {
     int marker_num;
 
-    if (arDetectMarkerLite(data_ptr_, thresh_, &marker_info_, &marker_num) < 0) {
+    if (arDetectMarker(data_ptr_, thresh_, &marker_info_, &marker_num) < 0) {
         printf("Error on arDetectMarkerLite");
         cleanup();
         getchar();
@@ -160,7 +160,6 @@ int Game::detectMarkers() {
             pattern.setVisible(true);
             visible_patterns_.push_back(&pattern);
             pattern.setInfo(marker_info_[i]);
-            pattern.setTransMat();
             printf("[Game::detectMarkers] pattern %s detected\n", pattern.getName().c_str());
         }
     }
