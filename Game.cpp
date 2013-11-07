@@ -82,39 +82,38 @@ void Game::init() {
 
 void Game::loadPatterns() {
     Pattern left_top_pattern = Pattern("Data/patt.left_top_corner", 40.0);
-    Pattern right_bottom_pattern = Pattern("Data/patt.right_bottom_corner", 40.0);
-    Pattern spawn_pattern = Pattern("Data/patt.spawn", 40.0);
-    Pattern cannon_pattern = Pattern("Data/patt.cannon", 40.0);
-    Pattern rotate_cannon_pattern = Pattern("Data/patt.cannon_rotate", 40.0);
-    Pattern spikes_pattern = Pattern("Data/patt.spikes", 40.0);
-    Pattern hole_pattern = Pattern("Data/patt.hole", 40.0);
-    Pattern up_pattern = Pattern("Data/patt.up", 40.0);
-    Pattern down_pattern = Pattern("Data/patt.down", 40.0);
-
     LEFT_TOP_CORNER = Pattern::loadPattern(left_top_pattern);
     patterns_[LEFT_TOP_CORNER] = left_top_pattern;
 
+    Pattern right_bottom_pattern = Pattern("Data/patt.right_bottom_corner", 40.0);
     RIGHT_BOTTOM_CORNER = Pattern::loadPattern(right_bottom_pattern);
     patterns_[RIGHT_BOTTOM_CORNER] = right_bottom_pattern;
 
+    Pattern spawn_pattern = Pattern("Data/patt.spawn", 40.0);
     SPAWN = Pattern::loadPattern(spawn_pattern);
     patterns_[SPAWN] = spawn_pattern;
 
+    Pattern cannon_pattern = Pattern("Data/patt.cannon", 40.0);
     CANNON = Pattern::loadPattern(cannon_pattern);
     patterns_[CANNON] = cannon_pattern;
 
+    Pattern rotate_cannon_pattern = Pattern("Data/patt.cannon_rotate", 40.0);
     ROTATE_CANNON = Pattern::loadPattern(rotate_cannon_pattern);
     patterns_[ROTATE_CANNON] = rotate_cannon_pattern;
 
+    Pattern spikes_pattern = Pattern("Data/patt.spikes", 40.0);
     SPIKES = Pattern::loadPattern(spikes_pattern);
     patterns_[SPIKES] = spikes_pattern;
 
+    Pattern hole_pattern = Pattern("Data/patt.hole", 40.0);
     HOLE = Pattern::loadPattern(hole_pattern);
     patterns_[HOLE] = hole_pattern;
 
+    Pattern up_pattern = Pattern("Data/patt.up", 40.0);
     UP = Pattern::loadPattern(up_pattern);
     patterns_[UP] = up_pattern;
 
+    Pattern down_pattern = Pattern("Data/patt.down", 40.0);
     DOWN = Pattern::loadPattern(down_pattern);
     patterns_[DOWN] = down_pattern;
 }
@@ -148,6 +147,8 @@ int Game::detectMarkers() {
         detected[it->first] = false;
     }
 
+    //printf("detected %d markers\n", marker_num);
+
     for(int i = 0; i < marker_num; ++i) {
         int id = marker_info_[i].id;
 
@@ -160,7 +161,7 @@ int Game::detectMarkers() {
             visible_patterns_.push_back(&pattern);
             pattern.setInfo(marker_info_[i]);
             pattern.setTransMat();
-            //printf("[Game::detectMarkers] pattern %s detected\n", pattern.getName().c_str());
+            printf("[Game::detectMarkers] pattern %s detected\n", pattern.getName().c_str());
         }
     }
 
