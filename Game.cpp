@@ -160,7 +160,7 @@ int Game::detectMarkers() {
             pattern.setVisible(true);
             visible_patterns_.push_back(&pattern);
             pattern.setInfo(marker_info_[i]);
-            printf("[Game::detectMarkers] pattern %s detected\n", pattern.getName().c_str());
+            //printf("[Game::detectMarkers] pattern %s detected\n", pattern.getName().c_str());
         }
     }
 
@@ -170,7 +170,7 @@ int Game::detectMarkers() {
         }
     }
 
-    updateBoardDimensions();
+    updateBoard();
     updateCannon();
     updatePlayer();
 
@@ -185,7 +185,7 @@ void Game::resetVisiblePatterns() {
     visible_patterns_.clear();
 }
 
-void Game::updateBoardDimensions() {
+void Game::updateBoard() {
     if(patterns_[LEFT_TOP_CORNER].isVisible()) {
         board_.setVisible(true);
 
@@ -220,10 +220,33 @@ void Game::updateCannon() {
 }
 
 void Game::updatePlayer() {
-    if(patterns_[LEFT_TOP_CORNER].isVisible() && patterns_[SPAWN].isVisible() && !player_.isAlive()) {
+    if (!patterns_[LEFT_TOP_CORNER].isVisible()) {
+        return;
+    }
+
+    if(patterns_[SPAWN].isVisible() && !player_.isAlive()) {
         Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[SPAWN]);
         player_ = Player(dist.x, dist.y);
     }
+
+    if (player_.isAlive()) {
+        player_.setMovingUp(patterns_[UP].isVisible());
+        player_.setMovingDown(patterns_[DOWN].isVisible());
+    }
+}
+
+void Game::updateTraps() {
+    if (patterns_[HOLE].isVisible()) {
+
+    }
+
+    if (patterns_[SPIKES].isVisible()) {
+
+    }
+}
+
+void Game::updateControls() {
+
 }
 
 void Game::mainLoop() {
@@ -279,12 +302,12 @@ void Game::drawScene() {
         }*/
 
         if(player_.isAlive()) {
-            player_.drawPlayer();
+            player_.draw();
         }
     }
 
-    glDisable( GL_LIGHTING );
-    glDisable( GL_DEPTH_TEST );
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
 }
 
 void Game::updateAnimations() {
@@ -293,7 +316,7 @@ void Game::updateAnimations() {
     double elapsed_time = (current_clock - previous_clock_) / (double) CLOCKS_PER_SEC;
 
     if(player_.isAlive()) {
-        if(!board_.isOnBoard(player_.getX(), player_.getY())) {
+        if(!board_.isOnBoard(&player_)) {
             player_.setAlive(false);
         }
         else {

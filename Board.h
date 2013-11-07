@@ -21,6 +21,6 @@ public:
     bool isVisible();
 
     bool isOnBoard(double x, double y);
-    bool isOnBoard(Object o);
+    bool isOnBoard(Object* o);
 };
 
