@@ -51,12 +51,9 @@ void Cannon::draw() {
     glPushMatrix();
     glLoadMatrixd(matrix);
 
-    glPushMatrix();
-
     glRotated(angle_, 0, 0, 1);
     glRotated(90.0, 0, 1, 0);
     glutSolidCone(20, 100, 20, 20);
 
-    glPopMatrix();
     glPopMatrix();
 }

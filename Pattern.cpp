@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#define PI 3.14159265
+
 Pattern::Pattern() {
 }
 
@@ -93,7 +95,7 @@ double Pattern::angle(Pattern p1, Pattern p2) {
     arUtilMatInv(p1.trans_, mat1);
     arUtilMatMul(mat1, p2.trans_, mat2);
 
-    return - atan2(mat2[0][1],mat2[0][0]) * 180/3.14;
+    return - atan2(mat2[0][1],mat2[0][0]) * 180/PI;
 }
 
 void Pattern::setVisible(bool) {
