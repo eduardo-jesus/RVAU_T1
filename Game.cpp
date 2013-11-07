@@ -226,7 +226,10 @@ void Game::updatePlayer() {
 
     if(patterns_[SPAWN].isVisible() && !player_.isAlive()) {
         Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[SPAWN]);
-        player_ = Player(dist.x, dist.y);
+        
+        if(board_.isOnBoard(dist.x, dist.y)) {
+            player_ = Player(dist.x, dist.y);
+        }
     }
 
     if (player_.isAlive()) {
