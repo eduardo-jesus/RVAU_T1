@@ -10,8 +10,7 @@
 #include "Player.h"
 #include "Bullet.h"
 
-class Game
-{
+class Game {
 private:
     std::map<int, Pattern> patterns_;
     std::vector<Pattern*> visible_patterns_;
@@ -22,6 +21,10 @@ private:
     int SPAWN;
     int CANNON;
     int ROTATE_CANNON;
+    int SPIKES;
+    int HOLE;
+    int UP;
+    int DOWN;
 
     //ARToolkit needed variables
     ARUint8 *data_ptr_;

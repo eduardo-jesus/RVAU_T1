@@ -100,3 +100,16 @@ bool Pattern::changeVisibility() {
 bool Pattern::isVisible() {
     return visible_;
 }
+
+int Pattern::loadPattern(Pattern& pattern) {
+    int id = arLoadPatt(pattern.getName().c_str());
+    if (id < 0) {
+        printf("pattern %s load error\n", pattern.getName().c_str());
+        getchar();
+        exit(-1);
+    }
+
+    pattern.setId(id);
+
+    return id;
+}

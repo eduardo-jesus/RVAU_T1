@@ -24,6 +24,8 @@ public:
     void setInfo(ARMarkerInfo);
     void setTransMat(); //Set trans_ using arGetTransMat. info_ must not be null 
 
+    static int loadPattern(Pattern& pattern);
+
     static Vector3 distance(Pattern, Pattern);
     static double angle(Pattern, Pattern);
 

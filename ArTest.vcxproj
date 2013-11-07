@@ -86,7 +86,6 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>

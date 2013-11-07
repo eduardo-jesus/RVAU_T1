@@ -81,51 +81,42 @@ void Game::init() {
 }
 
 void Game::loadPatterns() {
-    Pattern left_top_pattern = Pattern("Data/left_top_corner.pat", 40.0);
-    Pattern right_bottom_pattern = Pattern("Data/right_bottom_corner.pat", 40.0);
-    Pattern spawn_pattern = Pattern("Data/spawn.pat", 40.0);
-    Pattern cannon_pattern = Pattern("Data/cannon.pat", 40.0);
-    Pattern rotate_cannon_pattern = Pattern("Data/rotate.pat", 40.0);
+    Pattern left_top_pattern = Pattern("Data/patt.left_top_corner", 40.0);
+    Pattern right_bottom_pattern = Pattern("Data/patt.right_bottom_corner", 40.0);
+    Pattern spawn_pattern = Pattern("Data/patt.spawn", 40.0);
+    Pattern cannon_pattern = Pattern("Data/patt.cannon", 40.0);
+    Pattern rotate_cannon_pattern = Pattern("Data/patt.cannon_rotate", 40.0);
+    Pattern spikes_pattern = Pattern("Data/patt.spikes", 40.0);
+    Pattern hole_pattern = Pattern("Data/patt.hole", 40.0);
+    Pattern up_pattern = Pattern("Data/patt.up", 40.0);
+    Pattern down_pattern = Pattern("Data/patt.down", 40.0);
 
-    if ((LEFT_TOP_CORNER = arLoadPatt(left_top_pattern.getName().c_str())) < 0) {
-        printf("pattern left_top load error !!\n");
-        getchar();
-        exit(0);
-    }
-    left_top_pattern.setId(LEFT_TOP_CORNER);
+    LEFT_TOP_CORNER = Pattern::loadPattern(left_top_pattern);
     patterns_[LEFT_TOP_CORNER] = left_top_pattern;
 
-    if ((RIGHT_BOTTOM_CORNER = arLoadPatt(right_bottom_pattern.getName().c_str())) < 0) {
-        printf("pattern rigth_bottom load error !!\n");
-        getchar();
-        exit(0);
-    }
-    right_bottom_pattern.setId(RIGHT_BOTTOM_CORNER);
+    RIGHT_BOTTOM_CORNER = Pattern::loadPattern(right_bottom_pattern);
     patterns_[RIGHT_BOTTOM_CORNER] = right_bottom_pattern;
 
-    if ((SPAWN = arLoadPatt(spawn_pattern.getName().c_str())) < 0) {
-        printf("pattern spawn load error !!\n");
-        getchar();
-        exit(0);
-    }
-    spawn_pattern.setId(SPAWN);
+    SPAWN = Pattern::loadPattern(spawn_pattern);
     patterns_[SPAWN] = spawn_pattern;
 
-    if ((CANNON = arLoadPatt(cannon_pattern.getName().c_str())) < 0) {
-        printf("pattern cannon load error !!\n");
-        getchar();
-        exit(0);
-    }
-    cannon_pattern.setId(CANNON);
+    CANNON = Pattern::loadPattern(cannon_pattern);
     patterns_[CANNON] = cannon_pattern;
 
-    if ((ROTATE_CANNON = arLoadPatt(rotate_cannon_pattern.getName().c_str())) < 0) {
-        printf("pattern rotate load error !!\n");
-        getchar();
-        exit(0);
-    }
-    rotate_cannon_pattern.setId(ROTATE_CANNON);
+    ROTATE_CANNON = Pattern::loadPattern(rotate_cannon_pattern);
     patterns_[ROTATE_CANNON] = rotate_cannon_pattern;
+
+    SPIKES = Pattern::loadPattern(spikes_pattern);
+    patterns_[SPIKES] = spikes_pattern;
+
+    HOLE = Pattern::loadPattern(hole_pattern);
+    patterns_[HOLE] = hole_pattern;
+
+    UP = Pattern::loadPattern(up_pattern);
+    patterns_[UP] = up_pattern;
+
+    DOWN = Pattern::loadPattern(down_pattern);
+    patterns_[DOWN] = down_pattern;
 }
 
 bool Game::grabVideoFrame() {
