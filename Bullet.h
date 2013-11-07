@@ -2,7 +2,7 @@
 
 #include "Object.h"
 
-class Bullet : private Object {
+class Bullet : public Object {
 private:
     Vector3 position_;
     double speed_;
@@ -11,6 +11,10 @@ private:
     double direction_y_;
    
     bool moving_;
+
+    //while using cones
+    double radius_;
+    double length_;
 public:
     Bullet(void);
     Bullet(double x, double y, double angle);
@@ -32,5 +36,7 @@ public:
 
     void draw();
     void updateBulletPosition(double elapsed_time);
+
+    CollisionBox getCollisionBox();
 };
 

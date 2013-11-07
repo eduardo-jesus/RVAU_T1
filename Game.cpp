@@ -316,6 +316,12 @@ void Game::drawScene() {
         if(bullet_.isMoving()) {
             bullet_.draw();
         }
+
+        if(bullet_.isMoving() && player_.isAlive()) {
+            if(bullet_.isCollidingWith(&player_)) {
+                printf("COLLISION\n");
+            }
+        }
     }
 
     glDisable(GL_LIGHTING);

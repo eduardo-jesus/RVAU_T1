@@ -2,7 +2,7 @@
 
 #include "Object.h"
 
-class Player : private Object {
+class Player : public Object {
 private:
     static const double X_SPEED;
     static const double Y_SPEED;
@@ -16,6 +16,7 @@ public:
     ~Player(void);
 
     void draw();
+    CollisionBox getCollisionBox();
 
     void setPosition(double, double);
     void setMovingUp(bool);

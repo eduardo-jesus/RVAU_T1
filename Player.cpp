@@ -21,6 +21,9 @@ Player::Player(double x, double y) {
     moving_up_ = false;
     moving_down_ = false;
     alive_ = true;
+
+    width_ = 10;
+    height_ = 10;
 }
 
 Player::~Player(void) {
@@ -53,7 +56,7 @@ bool Player::isAlive() {
 
 void Player::draw() {
     glPushMatrix();
-    
+
     glTranslated(position_.x, position_.y, 10);
     glScaled(10,10,20);
     glutSolidCube(1);
@@ -73,4 +76,13 @@ void Player::updatePlayerAnimation(double elapsed_time) {
     }
 
     moving_up_ = moving_down_ = false;
+}
+
+CollisionBox Player::getCollisionBox() {
+    double left = position_.x - 5;
+    double right = left + width_;
+    double top = position_.y + 5;
+    double bottom = top - height_;
+
+    return CollisionBox(left, right, top, bottom);
 }
