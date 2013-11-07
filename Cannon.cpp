@@ -1,5 +1,8 @@
 #include "Cannon.h"
 
+#include <GL/glut.h>
+#include "AR\gsub.h"
+
 #include <cstdio>
 #include <ctime>
 
@@ -8,7 +11,6 @@ Cannon::Cannon(void) {
     can_shoot_ = false;
     shooting_ = false;
 }
-
 
 Cannon::~Cannon(void)
 {
@@ -40,4 +42,21 @@ bool Cannon::isShooting() {
 
 void Cannon::shoot() {
     printf("SHOOT %d\n", time(0));
+}
+
+void Cannon::draw() {
+    double matrix[16];
+    argConvGlpara(pattern_->getTrans(), matrix);
+    
+    glPushMatrix();
+    glLoadMatrixd(matrix);
+
+    glPushMatrix();
+
+    glRotated(angle_, 0, 0, 1);
+    glRotated(90.0, 0, 1, 0);
+    glutSolidCone(20, 100, 20, 20);
+
+    glPopMatrix();
+    glPopMatrix();
 }

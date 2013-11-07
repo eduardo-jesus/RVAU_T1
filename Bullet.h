@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Vector3.h"
+#include "Object.h"
 
-class Bullet
-{
+class Bullet : private Object {
 private:
     Vector3 position_;
     double speed_;
@@ -31,7 +30,7 @@ public:
     void setMoving(bool moving);
     bool isMoving();
 
-    void drawBullet();
+    void draw();
     void updateBulletPosition(double elapsed_time);
 };
 

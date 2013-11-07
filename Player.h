@@ -2,7 +2,7 @@
 
 #include "Object.h"
 
-class Player : public Object {
+class Player : private Object {
 private:
     static const double X_SPEED;
     static const double Y_SPEED;

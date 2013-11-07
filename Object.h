@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vector3.h"
+#include "Pattern.h"
 
 class Object {
 public:
@@ -22,9 +23,14 @@ public:
 
     void setScale(float scale);
     Vector3 getScale();
+
+    void setPattern(Pattern *pattern);
+    Pattern *getPattern();
 protected:
     Vector3 position_;
     Vector3 scale_;
     //Matrix transform_;
+
+    Pattern *pattern_;
 };
 

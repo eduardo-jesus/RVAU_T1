@@ -11,8 +11,7 @@ Board::Board(void) {
 }
 
 
-Board::~Board(void)
-{
+Board::~Board(void) {
 }
 
 void Board::setDimensions(double width, double heigth) {

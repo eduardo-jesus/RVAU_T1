@@ -2,8 +2,7 @@
 
 #include "Object.h"
 
-class Board
-{
+class Board {
 private:
     double width_;
     double height_;

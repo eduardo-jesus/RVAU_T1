@@ -47,3 +47,11 @@ double Object::getZ() {
 void Object::setZ(double z) {
     position_.z = z;
 }
+
+void Object::setPattern(Pattern *pattern) {
+    pattern_ = pattern;
+}
+
+Pattern *Object::getPattern() {
+    return pattern_;
+}

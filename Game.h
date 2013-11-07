@@ -50,7 +50,7 @@ public:
     void cleanup();
     int detectMarkers();
 
-    void updateBoard();
+    bool updateBoard();
     void updateCannon();
     void updatePlayer();
     void updateTraps();

@@ -97,6 +97,8 @@ void Game::loadPatterns() {
     CANNON = Pattern::loadPattern(cannon_pattern);
     patterns_[CANNON] = cannon_pattern;
 
+    cannon_.setPattern(&patterns_[CANNON]);
+
     Pattern rotate_cannon_pattern = Pattern("Data/patt.cannon_rotate", 40.0);
     ROTATE_CANNON = Pattern::loadPattern(rotate_cannon_pattern);
     patterns_[ROTATE_CANNON] = rotate_cannon_pattern;
@@ -170,9 +172,12 @@ int Game::detectMarkers() {
         }
     }
 
-    updateBoard();
-    updateCannon();
-    updatePlayer();
+    if (updateBoard()) {
+        updateCannon();
+        updatePlayer();
+        updateTraps();
+        updateControls();
+    }
 
     return marker_num;
 }
@@ -185,7 +190,7 @@ void Game::resetVisiblePatterns() {
     visible_patterns_.clear();
 }
 
-void Game::updateBoard() {
+bool Game::updateBoard() {
     if(patterns_[LEFT_TOP_CORNER].isVisible()) {
         board_.setVisible(true);
 
@@ -193,10 +198,11 @@ void Game::updateBoard() {
             Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[RIGHT_BOTTOM_CORNER]);
             board_.setDimensions(dist.x, dist.y);
         }
-    }
-    else {
+    } else {
         board_.setVisible(false);
     }
+
+    return board_.isVisible();
 }
 
 void Game::updateCannon() {
@@ -209,12 +215,13 @@ void Game::updateCannon() {
             if(!cannon_.isShooting()) {
                 cannon_.setCanShoot(true);
             }
-        }
-        else if(cannon_.canShoot()) {
+        } else if(cannon_.canShoot()) {
             //cannon_.setShooting(true);
             cannon_.setCanShoot(false);
             cannon_.shoot();
-            bullet_ = Bullet(0, 0, cannon_.getAngle());
+
+            Vector3 distance = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[CANNON]);
+            bullet_ = Bullet(distance.x, distance.y, cannon_.getAngle());
         }
     }
 }
@@ -288,9 +295,7 @@ void Game::drawScene() {
     Pattern& right_bottom = patterns_[RIGHT_BOTTOM_CORNER];
 
     if(cannon.isVisible()) {
-        double matrix[16];
-        argConvGlpara(cannon.getTrans(), matrix);
-        drawCone(matrix,cannon_.getAngle());
+        cannon_.draw();
     }
 
     if(board_.isVisible()) {
@@ -306,6 +311,10 @@ void Game::drawScene() {
 
         if(player_.isAlive()) {
             player_.draw();
+        }
+
+        if(bullet_.isMoving()) {
+            bullet_.draw();
         }
     }
 
@@ -349,6 +358,7 @@ void Game::drawRect(double x, double y, double gl_para[16]) {
     glEnd();
 }
 
+/*
 void Game::drawCone(double matrix[16], double angle) {
     glLoadMatrixd( matrix );
 
@@ -362,6 +372,7 @@ void Game::drawCone(double matrix[16], double angle) {
     glPopMatrix();
 
     if(bullet_.isMoving()) {
-        bullet_.drawBullet();
+        bullet_.draw();
     }
 }
+*/
