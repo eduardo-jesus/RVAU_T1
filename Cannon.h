@@ -1,5 +1,8 @@
 #pragma once
-class Cannon {
+
+#include "Object.h"
+
+class Cannon : public Object {
 private:
     double angle_;
     bool can_shoot_;
@@ -16,4 +19,6 @@ public:
     bool isShooting();
 
     void shoot();
+
+    void draw();
 };

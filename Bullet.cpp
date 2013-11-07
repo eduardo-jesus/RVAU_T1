@@ -71,7 +71,7 @@ bool Bullet::isMoving() {
     return moving_;
 }
 
-void Bullet::drawBullet() {
+void Bullet::draw() {
     glPushMatrix();
 
     glTranslated(position_.x, position_.y, position_.z);
