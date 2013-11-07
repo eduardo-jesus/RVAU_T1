@@ -7,11 +7,19 @@ public:
     Object();
     ~Object();
     
-    void draw();
+    virtual void draw() = 0;
     void update();
 
     void setPosition(Vector3 position);
     Vector3 getPosition();
+
+    double getX();
+    void setX(double x);
+    double getY();
+    void setY(double y);
+    double getZ();
+    void setZ(double z);
+
     void setScale(float scale);
     Vector3 getScale();
 protected:

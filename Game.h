@@ -49,9 +49,12 @@ public:
     bool grabVideoFrame();
     void cleanup();
     int detectMarkers();
-    void updateBoardDimensions();
+
+    void updateBoard();
     void updateCannon();
     void updatePlayer();
+    void updateTraps();
+    void updateControls();
 
     void mainLoop();
 

@@ -2,12 +2,12 @@
 
 #include <GL/glut.h>
 
-Player::Player(void) {
-    x_ = 0;
-    y_ = 0;
+const double Player::X_SPEED = 25;
+const double Player::Y_SPEED = 50;
 
-    x_speed_ = 25;
-    y_speed_ = 10;
+Player::Player(void) {
+    position_.x = 0;
+    position_.y = 0;
 
     moving_up_ = false;
     moving_down_ = false;
@@ -15,41 +15,16 @@ Player::Player(void) {
 }
 
 Player::Player(double x, double y) {
-    x_ = x;
-    y_ = y;
-
-    x_speed_ = 50;
-    y_speed_ = 10;
+    position_.x = x;
+    position_.y = y;
 
     moving_up_ = false;
     moving_down_ = false;
     alive_ = true;
 }
 
-
 Player::~Player(void) {
 
-}
-
-void Player::setX(double x) {
-    x_ = x;
-}
-
-double Player::getX() {
-    return x_;
-}
-
-void Player::setY(double y) {
-    y_ = y;
-}
-
-double Player::getY() {
-    return y_;
-}
-
-void Player::setPosition(double x, double y) {
-    setX(x);
-    setY(y);
 }
 
 void Player::setMovingUp(bool moving_up) {
@@ -76,10 +51,10 @@ bool Player::isAlive() {
     return alive_;
 }
 
-void Player::drawPlayer() {
+void Player::draw() {
     glPushMatrix();
     
-    glTranslated(x_, y_, 10);
+    glTranslated(position_.x, position_.y, 10);
     glScaled(10,10,20);
     glutSolidCube(1);
 
@@ -87,13 +62,15 @@ void Player::drawPlayer() {
 }
 
 void Player::updatePlayerAnimation(double elapsed_time) {
-    x_ += x_speed_ * elapsed_time;
+    position_.x += X_SPEED * elapsed_time;
 
-    if(moving_up_ && !moving_down_) {
-        y_ += y_speed_ * elapsed_time;
-    }
-    else if(moving_down_) {
-        y_ -= y_speed_ * elapsed_time; 
+    if (moving_up_ != moving_down_) {
+        if(moving_up_) {
+            position_.y += Y_SPEED * elapsed_time;
+        } else if(moving_down_) {
+            position_.y -= Y_SPEED * elapsed_time; 
+        }
     }
 
+    moving_up_ = moving_down_ = false;
 }

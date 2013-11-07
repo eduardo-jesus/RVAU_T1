@@ -1,12 +1,11 @@
 #pragma once
-class Player
-{
-private:
-    double x_;
-    double y_;
 
-    double x_speed_;
-    double y_speed_;
+#include "Object.h"
+
+class Player : public Object {
+private:
+    static const double X_SPEED;
+    static const double Y_SPEED;
 
     bool moving_up_;
     bool moving_down_;
@@ -15,10 +14,9 @@ public:
     Player(void);
     Player(double, double);
     ~Player(void);
-    void setX(double);
-    double getX();
-    void setY(double);
-    double getY();
+
+    void draw();
+
     void setPosition(double, double);
     void setMovingUp(bool);
     bool isMovingUp();
@@ -27,7 +25,5 @@ public:
     void setAlive(bool);
     bool isAlive();
 
-    void drawPlayer();
     void updatePlayerAnimation(double elapsed_time);
 };
-
