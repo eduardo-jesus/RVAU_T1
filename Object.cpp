@@ -19,3 +19,7 @@ void Object::draw() {
 void Object::update() {
 
 }
+
+Vector3 Object::getPosition() {
+    return position_;
+}

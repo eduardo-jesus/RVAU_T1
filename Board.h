@@ -1,4 +1,7 @@
 #pragma once
+
+#include "Object.h"
+
 class Board
 {
 private:
@@ -16,5 +19,8 @@ public:
 
     void setVisible(bool);
     bool isVisible();
+
+    bool isOnBoard(double x, double y);
+    bool isOnBoard(Object o);
 };
 
