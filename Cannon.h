@@ -7,6 +7,9 @@ private:
     double angle_;
     bool can_shoot_;
     bool shooting_;
+
+    double radius_;
+    double length_;
 public:
     Cannon(void);
     ~Cannon(void);
@@ -21,4 +24,5 @@ public:
     void shoot();
 
     void draw();
+    CollisionBox getCollisionBox();
 };

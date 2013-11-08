@@ -345,6 +345,11 @@ void Game::drawScene() {
 
         if(cannon_.isVisible()) {
             cannon_.draw();
+
+            if(player_.isAlive() && cannon_.isCollidingWith(&player_)) {
+                printf("Collision with cannon\n");
+                player_.setAlive(false);
+            }
         }
 
         if(player_.isAlive()) {
@@ -357,7 +362,7 @@ void Game::drawScene() {
 
         if(spikes_.isVisible()) {
             spikes_.draw();
-            
+
             if(player_.isAlive()) {
                 if(spikes_.isCollidingWith(&player_)) {
                     printf("Collision with spikes\n");
