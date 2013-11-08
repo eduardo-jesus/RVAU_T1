@@ -45,5 +45,8 @@ bool Board::isOnBoard(double x, double y) {
 }
 
 bool Board::isOnBoard(Object* o) {
-    return isOnBoard(o->getPosition().x, o->getPosition().y);
+    //return isOnBoard(o->getPosition().x, o->getPosition().y);
+    CollisionBox box = o->getCollisionBox();
+
+    return box.top < 0 && box.left > 0 && box.bottom > height_ && box.right < width_;
 }

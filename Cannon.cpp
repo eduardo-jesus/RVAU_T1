@@ -45,11 +45,13 @@ void Cannon::shoot() {
 }
 
 void Cannon::draw() {
-    double matrix[16];
-    argConvGlpara(pattern_->getTrans(), matrix);
+    //double matrix[16];
+    //argConvGlpara(pattern_->getTrans(), matrix);
     
     glPushMatrix();
-    glLoadMatrixd(matrix);
+    //glLoadMatrixd(matrix);
+
+    glTranslated(position_.x, position_.y, 5);
 
     glRotated(angle_, 0, 0, 1);
     glRotated(90.0, 0, 1, 0);

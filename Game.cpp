@@ -13,6 +13,7 @@ Game::Game(void) {
     board_ = Board();
     player_ = Player();
     hole_ = Hole(0,0,40,40,100);
+    spikes_ = Spikes(0,0,40,40);
 }
 
 Game::~Game(void) {
@@ -208,7 +209,11 @@ bool Game::updateBoard() {
 
 void Game::updateCannon() {
     if(patterns_[CANNON].isVisible()) {
+        Vector3 distance = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[CANNON]);
 
+        cannon_.setX(distance.x);
+        cannon_.setY(distance.y);
+        cannon_.setVisible(true);
         if(patterns_[ROTATE_CANNON].isVisible()) {
             double angle = Pattern::angle(patterns_[CANNON], patterns_[ROTATE_CANNON]);
             cannon_.setAngle(angle);
@@ -221,9 +226,10 @@ void Game::updateCannon() {
             cannon_.setCanShoot(false);
             cannon_.shoot();
 
-            Vector3 distance = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[CANNON]);
             bullet_ = Bullet(distance.x, distance.y, cannon_.getAngle());
         }
+    } else {
+        cannon_.setVisible(false);
     }
 }
 
@@ -264,7 +270,19 @@ void Game::updateTraps() {
     }
 
     if (patterns_[SPIKES].isVisible()) {
-
+        spikes_.setVisible(true);
+        Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[SPIKES]);
+        spikes_.setX(dist.x);
+        spikes_.setY(dist.y);
+        if(board_.isOnBoard(&spikes_)) {
+            spikes_.setVisible(true);
+        }
+        else {
+            spikes_.setVisible(false);
+        }
+    }
+    else {
+        spikes_.setVisible(false);
     }
 }
 
@@ -306,17 +324,9 @@ void Game::drawScene() {
     glMatrixMode(GL_MODELVIEW);
     glEnable(GL_LIGHTING);
 
-    Pattern& cannon = patterns_[CANNON];
-    Pattern& left_top = patterns_[LEFT_TOP_CORNER];
-    Pattern& right_bottom = patterns_[RIGHT_BOTTOM_CORNER];
-
-    if(cannon.isVisible()) {
-        cannon_.draw();
-    }
-
     if(board_.isVisible()) {
         double gl_param[16];
-        argConvGlpara(left_top.getTrans(), gl_param);
+        argConvGlpara(patterns_[LEFT_TOP_CORNER].getTrans(), gl_param);
 
         GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
         GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
@@ -333,11 +343,9 @@ void Game::drawScene() {
         //drawRect(board_.getWidth(), board_.getHeight(), gl_param);
         drawBoard();
 
-        /*if(patterns_[SPAWN].isVisible()) {
-        Vector3 dist = Pattern::distance(left_top, patterns_[SPAWN]);
-        Player p = Player(dist.x, dist.y);
-        p.drawPlayer();
-        }*/
+        if(cannon_.isVisible()) {
+            cannon_.draw();
+        }
 
         if(player_.isAlive()) {
             player_.draw();
@@ -345,6 +353,16 @@ void Game::drawScene() {
 
         if(bullet_.isMoving()) {
             bullet_.draw();
+        }
+
+        if(spikes_.isVisible()) {
+            spikes_.draw();
+            
+            if(player_.isAlive()) {
+                if(spikes_.isCollidingWith(&player_)) {
+                    printf("Collision with spikes\n");
+                }
+            }
         }
 
         if(bullet_.isMoving() && player_.isAlive()) {
@@ -365,7 +383,6 @@ void Game::drawScene() {
 }
 
 void Game::updateAnimations() {
-    //printf("anim\n");
     clock_t current_clock = clock();
     double elapsed_time = (current_clock - previous_clock_) / (double) CLOCKS_PER_SEC;
 
@@ -440,22 +457,3 @@ void Game::drawBoard() {
         hole_.draw();
     }
 }
-
-/*
-void Game::drawCone(double matrix[16], double angle) {
-glLoadMatrixd( matrix );
-
-GLfloat light_position[]  = {100.0,-200.0,200.0,0.0};
-glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-glPushMatrix();
-glRotated(angle, 0,0,1);
-glRotated(90.0,0,1,0);
-glutSolidCone(20, 200, 20, 20);
-glPopMatrix();
-
-if(bullet_.isMoving()) {
-bullet_.draw();
-}
-}
-*/
