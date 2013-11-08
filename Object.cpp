@@ -36,7 +36,7 @@ void Object::load(std::string filename) {
         std::vector<float> tex_coords = shapes[i].mesh.texcoords;
         std::vector<unsigned int> indices = shapes[i].mesh.indices;
 
-        size_t num_normals = normals.size / 3;
+        size_t num_normals = normals.size() / 3;
         size_t num_faces = indices.size() / 3;
         size_t num_tex_coords = tex_coords.size() / 2;
 
@@ -72,7 +72,9 @@ void Object::load(std::string filename) {
 
 }
 
-void Object::draw() {}
+void Object::draw() {
+
+}
 
 void Object::update() {
 
