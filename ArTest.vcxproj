@@ -83,6 +83,7 @@
     <ClCompile Include="Cannon.cpp" />
     <ClCompile Include="CollisionBox.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Hole.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Pattern.cpp" />
@@ -95,6 +96,7 @@
     <ClInclude Include="Cannon.h" />
     <ClInclude Include="CollisionBox.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Hole.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Pattern.h" />
     <ClInclude Include="Player.h" />

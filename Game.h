@@ -9,6 +9,7 @@
 #include "Cannon.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Hole.h"
 
 class Game {
 private:
@@ -35,6 +36,7 @@ private:
     Cannon cannon_;
     Player player_;
     Bullet bullet_;
+    Hole hole_;
 
     //animation
     int anim_millis_;
@@ -61,8 +63,10 @@ public:
     void drawScene();
     void updateAnimations();
     
+    void drawBoard();
     //remove later
     void drawRect(double x, double y, double gl_para[16]);
+    void drawRect(double cx, double cy, double width, double height);
     void drawCone(double matrix[16], double angle);
 
     void resetVisiblePatterns();

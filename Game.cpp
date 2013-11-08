@@ -12,6 +12,7 @@ Game::Game(void) {
     previous_clock_ = clock();
     board_ = Board();
     player_ = Player();
+    hole_ = Hole(0,0,40,40,100);
 }
 
 Game::~Game(void) {
@@ -156,7 +157,7 @@ int Game::detectMarkers() {
 
         if(patterns_.find(id) != patterns_.end()) {
             detected[id] = true;
-            
+
             Pattern& pattern = patterns_[id];
 
             pattern.setVisible(true);
@@ -233,7 +234,7 @@ void Game::updatePlayer() {
 
     if(patterns_[SPAWN].isVisible() && !player_.isAlive()) {
         Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[SPAWN]);
-        
+
         if(board_.isOnBoard(dist.x, dist.y)) {
             player_ = Player(dist.x, dist.y);
         }
@@ -247,7 +248,19 @@ void Game::updatePlayer() {
 
 void Game::updateTraps() {
     if (patterns_[HOLE].isVisible()) {
-
+        hole_.setVisible(true);
+        Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[HOLE]);
+        hole_.setX(dist.x);
+        hole_.setY(dist.y);
+        if(board_.isOnBoard(&hole_)) {
+            hole_.setVisible(true);
+        }
+        else {
+            hole_.setVisible(false);
+        }
+    }
+    else {
+        hole_.setVisible(false);
     }
 
     if (patterns_[SPIKES].isVisible()) {
@@ -287,6 +300,9 @@ void Game::drawScene() {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
+    glEnable(GL_CULL_FACE); /* Use back face culling to improve speed. */
+    glCullFace(GL_BACK); /* Cull only back faces. */
+
     glMatrixMode(GL_MODELVIEW);
     glEnable(GL_LIGHTING);
 
@@ -301,12 +317,26 @@ void Game::drawScene() {
     if(board_.isVisible()) {
         double gl_param[16];
         argConvGlpara(left_top.getTrans(), gl_param);
-        drawRect(board_.getWidth(), board_.getHeight(), gl_param);
+
+        GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
+        GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
+        GLfloat   mat_flash_shiny[] = {50.0};
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
+        glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
+        glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+
+        glLoadMatrixd( gl_param );
+
+        GLfloat light_position[]  = {100.0,-200.0,200.0,0.0};
+        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+        //drawRect(board_.getWidth(), board_.getHeight(), gl_param);
+        drawBoard();
 
         /*if(patterns_[SPAWN].isVisible()) {
-            Vector3 dist = Pattern::distance(left_top, patterns_[SPAWN]);
-            Player p = Player(dist.x, dist.y);
-            p.drawPlayer();
+        Vector3 dist = Pattern::distance(left_top, patterns_[SPAWN]);
+        Player p = Player(dist.x, dist.y);
+        p.drawPlayer();
         }*/
 
         if(player_.isAlive()) {
@@ -322,8 +352,14 @@ void Game::drawScene() {
                 printf("COLLISION\n");
             }
         }
-    }
 
+        if(hole_.isVisible() && player_.isAlive()) {
+            if(hole_.isCollidingWith(&player_)) {
+                printf("Collision with hole\n");
+            }
+        }
+    }
+    glDisable(GL_CULL_FACE);
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
 }
@@ -345,15 +381,11 @@ void Game::updateAnimations() {
     if(bullet_.isMoving()) {
         bullet_.updateBulletPosition(elapsed_time);
     }
-    
+
     previous_clock_ = current_clock;
 }
 
 void Game::drawRect(double x, double y, double gl_para[16]) {
-    glLoadMatrixd( gl_para );
-
-    GLfloat light_position[]  = {100.0,-200.0,200.0,0.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
     glBegin(GL_POLYGON);
     glNormal3d(0,0,1);
@@ -364,21 +396,66 @@ void Game::drawRect(double x, double y, double gl_para[16]) {
     glEnd();
 }
 
+void Game::drawRect(double cx, double cy, double width, double height) {
+    glPushMatrix();
+
+    glTranslated(cx, cy, 0);
+
+
+    glBegin(GL_POLYGON);
+    glNormal3d(0,0,1);
+    glVertex3d(width/2.0,height/2.0,0);
+    glVertex3d(-width/2.0,height/2.0,0);
+    glVertex3d(-width/2.0,-height/2.0,0);
+    glVertex3d(width/2.0,-height/2.0,0);
+    glEnd();
+    glPopMatrix();
+}
+
+void Game::drawBoard() {
+    if(!hole_.isVisible()) {
+        drawRect(board_.getWidth()/2, board_.getHeight()/2, board_.getWidth(), -board_.getHeight());
+    } else {
+        double width_top_bottom = board_.getWidth();
+        double width_left = hole_.getPosition().x - hole_.getWidth()/2.0;
+        double width_right = board_.getWidth() - width_left - hole_.getWidth();
+        double heigth_top = -hole_.getPosition().y - hole_.getHeight()/2.0;
+        double height_middle = hole_.getHeight();
+        double height_down = -board_.getHeight() - height_middle -heigth_top;
+
+        double top_cx = board_.getWidth()/2.0;
+        double top_cy = - heigth_top / 2.0;
+        double bottom_cx = top_cx;
+        double bottom_cy = -(heigth_top + height_middle + height_down/2.0) ;
+        double left_cx = width_left /2.0;
+        double left_cy = -(heigth_top + height_middle/2.0);
+        double right_cx = width_left + hole_.getWidth() + width_right/2.0;
+        double right_cy = left_cy;
+
+        drawRect(top_cx, top_cy, width_top_bottom, heigth_top);
+        drawRect(bottom_cx, bottom_cy, width_top_bottom, height_down);
+        drawRect(left_cx, left_cy, width_left, height_middle);
+        drawRect(right_cx, right_cy, width_right, height_middle);
+
+        hole_.draw();
+    }
+}
+
 /*
 void Game::drawCone(double matrix[16], double angle) {
-    glLoadMatrixd( matrix );
+glLoadMatrixd( matrix );
 
-    GLfloat light_position[]  = {100.0,-200.0,200.0,0.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+GLfloat light_position[]  = {100.0,-200.0,200.0,0.0};
+glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-    glPushMatrix();
-    glRotated(angle, 0,0,1);
-    glRotated(90.0,0,1,0);
-    glutSolidCone(20, 200, 20, 20);
-    glPopMatrix();
+glPushMatrix();
+glRotated(angle, 0,0,1);
+glRotated(90.0,0,1,0);
+glutSolidCone(20, 200, 20, 20);
+glPopMatrix();
 
-    if(bullet_.isMoving()) {
-        bullet_.draw();
-    }
+if(bullet_.isMoving()) {
+bullet_.draw();
+}
 }
 */
