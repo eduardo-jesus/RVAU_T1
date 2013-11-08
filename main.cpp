@@ -1,10 +1,10 @@
 #pragma once
 
-#include <windows.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <GL/gl.h>
-#include <GL/glut.h>
+#include <gl/glew.h>
+#include <gl/glut.h>
 
 #include <AR/gsub.h>
 #include <AR/video.h>
@@ -19,7 +19,6 @@ Game game = Game();
 void keyEvent(unsigned char key, int x, int y) {
 }
 
-/* main loop */
 void mainLoop(void) {
    game.mainLoop();
 }
@@ -31,8 +30,9 @@ void updateAnimations(int dummy) {
 
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
-    game.init();
 
+    game.init();
+    
     arVideoCapStart();
     glutTimerFunc(30, updateAnimations,0);
     argMainLoop(NULL, keyEvent, mainLoop);

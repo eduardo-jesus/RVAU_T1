@@ -2,7 +2,8 @@
 
 #include <cstdio>
 
-#include <GL/glut.h>
+#include <gl/glew.h>
+#include <gl/glut.h>
 #include "AR\video.h"
 #include "AR\gsub.h"
 
@@ -56,6 +57,8 @@ void Game::init() {
 
     loadPatterns();
 
+    
+
     /* open the graphics window */
     //argInit( &cparam, 1.0, 0, 2, 1, 0 );
     argInit( &cparam, 1.0, 0, 0, 0, 0 );
@@ -63,6 +66,12 @@ void Game::init() {
     arImageProcMode = AR_IMAGE_PROC_IN_HALF;
     argDrawMode     = AR_DRAW_BY_TEXTURE_MAPPING;
     argTexmapMode   = AR_DRAW_TEXTURE_HALF_IMAGE;
+
+    GLenum res = glewInit();
+    if (GLEW_OK != res)    {
+        /* Problem: glewInit failed, something is seriously wrong. */
+        fprintf(stderr, "Error: %s\n", glewGetErrorString(res));
+    }
 
     GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
     GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
@@ -122,10 +131,16 @@ void Game::loadPatterns() {
 }
 
 bool Game::grabVideoFrame() {
-    if( (data_ptr_ = (ARUint8 *)arVideoGetImage()) == NULL ) {
-        arUtilSleep(2);
-        return false;
+    if ((data_ptr_ = (ARUint8 *)arVideoGetImage()) == NULL) {
+         if(data_ptr_backup_ != NULL) {
+            data_ptr_ = data_ptr_backup_; 
+         } else {
+            return false;
+         }
+    } else {
+       data_ptr_backup_ = data_ptr_ ; 
     }
+
     return true;
 }
 
@@ -288,7 +303,7 @@ void Game::mainLoop() {
     drawScene();
 
     resetVisiblePatterns();
-
+    
     argSwapBuffers();
 }
 
@@ -359,6 +374,7 @@ void Game::drawScene() {
             }
         }
     }
+
     glDisable(GL_CULL_FACE);
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);

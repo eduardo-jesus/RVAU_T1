@@ -29,6 +29,7 @@ private:
 
     //ARToolkit needed variables
     ARUint8 *data_ptr_;
+    ARUint8 *data_ptr_backup_;
     ARMarkerInfo *marker_info_;
     int thresh_;
 
