@@ -1,4 +1,7 @@
-#pragma once
+#ifndef _OBJECT_
+#define _OBJECT_
+
+#include <vector>
 
 #include "Vector2.hpp"
 #include "Vector3.h"
@@ -16,7 +19,8 @@ public:
     Object();
     ~Object();
     
-    static void load(std::string filename);
+    void load(std::string filename);
+    void render();
 
     virtual void draw() = 0;
     void update();
@@ -48,6 +52,8 @@ public:
     void setVisible(bool visible);
     bool isVisible();
 protected:
+    std::vector<Triangle> triangles_;
+
     Vector3 position_;
     Vector3 scale_;
     //Matrix transform_;
@@ -60,3 +66,4 @@ protected:
     Pattern *pattern_;
 };
 
+#endif

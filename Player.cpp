@@ -30,6 +30,7 @@ Player::Player(double x, double y) {
     width_ = 10;
     height_ = 10;
 
+    load("Data/teste.obj");
 }
 
 Player::~Player(void) {
@@ -65,7 +66,8 @@ void Player::draw() {
 
     glTranslated(position_.x, position_.y, 10);
     glScaled(10,10,20);
-    glutSolidCube(1);
+    //glutSolidCube(1);
+    render();
 
     glPopMatrix();
 }

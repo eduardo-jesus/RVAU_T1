@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 
+#include <gl/glut.h>
+
 #include "tiny_obj_loader.hpp"
 
 Object::Object() {
@@ -70,7 +72,20 @@ void Object::load(std::string filename) {
         }
     }
 
+    triangles_ = triangles;
 }
+void Object::render() {
+    for (size_t i = 0; i < triangles_.size(); ++i) {
+        glBegin(GL_TRIANGLES);
+        for (int j = 0; j < 3; ++j) {
+            glTexCoord2f(triangles_[i].uvws[j].x, triangles_[i].uvws[j].y);
+            glNormal3f(triangles_[i].normals[j].x, triangles_[i].normals[j].y, triangles_[i].normals[j].z);
+            glVertex3f(triangles_[i].vertices[j].x, triangles_[i].vertices[j].y, triangles_[i].vertices[j].z);
+        }
+        glEnd();
+    }
+}
+
 
 void Object::draw() {
 
