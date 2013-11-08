@@ -4,8 +4,8 @@
 
 
 Board::Board(void) {
-    width_ = 250.0;
-    height_ = -100.0;
+    width_ = MIN_WIDTH;//250.0;
+    height_ = MIN_HEIGHT;//-100.0;
 
     visible_ = false;
 }
@@ -14,6 +14,7 @@ Board::Board(void) {
 Board::~Board(void) {
 }
 
+/*
 void Board::setDimensions(double width, double heigth) {
     if(abs(width_ - width) > 10) {
         width_ = width;
@@ -21,6 +22,21 @@ void Board::setDimensions(double width, double heigth) {
 
     if(abs(height_ - heigth) > 10) {
         height_ = heigth;
+    }
+}*/
+
+void Board::setDimensions(double right_bottom_x, double right_bottom_y) {
+    if(right_bottom_x < 0 || right_bottom_y > 0) {
+        return;
+    }
+    
+    if(right_bottom_x > MIN_WIDTH) {
+        width_ = right_bottom_x;
+    }
+
+    right_bottom_y *= -1;
+    if(right_bottom_y > MIN_HEIGHT) {
+        height_ = right_bottom_y;
     }
 }
 
@@ -41,12 +57,12 @@ bool Board::isVisible() {
 }
 
 bool Board::isOnBoard(double x, double y) {
-    return !(x < 0 || x > width_ || y > 0 || y < height_);
+    return !(x < 0 || x > width_ || y > 0 || y < -height_);
 }
 
 bool Board::isOnBoard(Object* o) {
     //return isOnBoard(o->getPosition().x, o->getPosition().y);
     CollisionBox box = o->getCollisionBox();
 
-    return box.top < 0 && box.left > 0 && box.bottom > height_ && box.right < width_;
+    return box.top < 0 && box.left > 0 && box.bottom > -height_ && box.right < width_;
 }

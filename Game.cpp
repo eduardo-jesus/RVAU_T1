@@ -222,7 +222,7 @@ void Game::updateCannon() {
                 cannon_.setCanShoot(true);
             }
         } else if(cannon_.canShoot()) {
-            //cannon_.setShooting(true);
+            cannon_.setShooting(true);
             cannon_.setCanShoot(false);
             cannon_.shoot();
 
@@ -396,7 +396,13 @@ void Game::updateAnimations() {
     }
 
     if(bullet_.isMoving()) {
-        bullet_.updateBulletPosition(elapsed_time);
+        if(!board_.isOnBoard(&bullet_)) {
+            bullet_.setMoving(false);
+            cannon_.setShooting(false);
+        }
+        else {
+            bullet_.updateBulletPosition(elapsed_time);
+        }
     }
 
     previous_clock_ = current_clock;
@@ -431,14 +437,14 @@ void Game::drawRect(double cx, double cy, double width, double height) {
 
 void Game::drawBoard() {
     if(!hole_.isVisible()) {
-        drawRect(board_.getWidth()/2, board_.getHeight()/2, board_.getWidth(), -board_.getHeight());
+        drawRect(board_.getWidth()/2, -board_.getHeight()/2, board_.getWidth(), board_.getHeight());
     } else {
         double width_top_bottom = board_.getWidth();
         double width_left = hole_.getPosition().x - hole_.getWidth()/2.0;
         double width_right = board_.getWidth() - width_left - hole_.getWidth();
         double heigth_top = -hole_.getPosition().y - hole_.getHeight()/2.0;
         double height_middle = hole_.getHeight();
-        double height_down = -board_.getHeight() - height_middle -heigth_top;
+        double height_down = board_.getHeight() - height_middle -heigth_top;
 
         double top_cx = board_.getWidth()/2.0;
         double top_cy = - heigth_top / 2.0;
