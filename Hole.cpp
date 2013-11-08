@@ -18,14 +18,14 @@ Hole::Hole(double x, double y, double width, double height, double depth) {
 Hole::~Hole(void)
 {
 }
-
+/*
 void Hole::setVisible(bool visible) {
     visible_ = visible;
 }
 
 bool Hole::isVisible() {
     return visible_;
-}
+}*/
 
 void Hole::draw() {
     glPushMatrix();

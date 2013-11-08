@@ -2,15 +2,13 @@
 
 #include "Object.h"
 
-class Hole : public Object {
+class Spikes : public Object {
 private:
-    double depth_;
-
     //bool visible_;
 public:
-    Hole(void);
-    Hole(double x, double y, double width, double height, double depth_);
-    ~Hole(void);
+    Spikes(void);
+    Spikes(double x, double y, double width, double height);
+    ~Spikes(void);
 
     //void setVisible(bool visible);
     //bool isVisible();

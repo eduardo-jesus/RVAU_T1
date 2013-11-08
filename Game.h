@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Hole.h"
+#include "Spikes.h"
 
 class Game {
 private:
@@ -38,6 +39,7 @@ private:
     Player player_;
     Bullet bullet_;
     Hole hole_;
+    Spikes spikes_;
 
     //animation
     int anim_millis_;

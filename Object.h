@@ -35,6 +35,9 @@ public:
     double getHeight();
 
     bool isCollidingWith(Object*);
+
+    void setVisible(bool visible);
+    bool isVisible();
 protected:
     Vector3 position_;
     Vector3 scale_;
@@ -42,6 +45,8 @@ protected:
 
     double width_;
     double height_;
+
+    bool visible_;
 
     Pattern *pattern_;
 };

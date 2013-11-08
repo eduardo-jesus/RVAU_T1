@@ -8,11 +8,16 @@ private:
     double height_;
 
     bool visible_;
+
+#define MIN_WIDTH  200
+#define MIN_HEIGHT 100
+
 public:
     Board(void);
     ~Board(void);
 
-    void setDimensions(double width, double height);
+    //void setDimensions(double width, double height);
+    void setDimensions(double right_bottom_x, double right_bottom_y);
     double getWidth();
     double getHeight();
 

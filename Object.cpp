@@ -123,3 +123,11 @@ bool Object::isCollidingWith(Object* obj) {
     //If none of the sides from A are outside B
     return true;
 }
+
+void Object::setVisible(bool visible) {
+    visible_ = visible;
+}
+
+bool Object::isVisible() {
+    return visible_;
+}

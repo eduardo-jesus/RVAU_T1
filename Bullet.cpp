@@ -129,7 +129,7 @@ CollisionBox Bullet::getCollisionBox() {
     }
 
     if(v2_y > max_y) {
-        max_x = v2_x;
+        max_y = v2_y;
     }
     if(v3_y > max_y) {
         max_y = v3_y;
