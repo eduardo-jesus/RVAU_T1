@@ -224,7 +224,7 @@ void Game::updateCannon() {
         } else if(cannon_.canShoot()) {
             cannon_.setShooting(true);
             cannon_.setCanShoot(false);
-            cannon_.shoot();
+            //cannon_.shoot();
 
             bullet_ = Bullet(distance.x, distance.y, cannon_.getAngle());
         }
@@ -361,6 +361,7 @@ void Game::drawScene() {
             if(player_.isAlive()) {
                 if(spikes_.isCollidingWith(&player_)) {
                     printf("Collision with spikes\n");
+                    player_.setAlive(false);
                 }
             }
         }
@@ -368,12 +369,14 @@ void Game::drawScene() {
         if(bullet_.isMoving() && player_.isAlive()) {
             if(bullet_.isCollidingWith(&player_)) {
                 printf("COLLISION\n");
+                player_.setAlive(false);
             }
         }
 
         if(hole_.isVisible() && player_.isAlive()) {
             if(hole_.isCollidingWith(&player_)) {
                 printf("Collision with hole\n");
+                player_.setAlive(false);
             }
         }
     }
@@ -423,7 +426,6 @@ void Game::drawRect(double cx, double cy, double width, double height) {
     glPushMatrix();
 
     glTranslated(cx, cy, 0);
-
 
     glBegin(GL_POLYGON);
     glNormal3d(0,0,1);
