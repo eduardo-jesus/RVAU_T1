@@ -14,7 +14,9 @@ Vector3::Vector3(double x, double y, double z) {
     this->z = z;
 }
 
-Vector3::~Vector3() {}
+Vector3::~Vector3() {
+
+}
 
 void Vector3::set(double x, double y, double z) {
     this->x = x;

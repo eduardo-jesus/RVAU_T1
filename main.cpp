@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <gl/glew.h>
@@ -14,7 +13,7 @@
 
 #include "Game.h"
 
-Game game = Game();
+Game game;
 
 void keyEvent(unsigned char key, int x, int y) {
 }

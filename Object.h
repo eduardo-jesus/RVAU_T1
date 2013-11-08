@@ -1,14 +1,23 @@
 #pragma once
 
+#include "Vector2.hpp"
 #include "Vector3.h"
 #include "Pattern.h"
 #include "CollisionBox.h"
+
+struct Triangle {
+    Vector3 vertices[3];
+    Vector3 normals[3];
+    Vector2 uvws[3];
+};
 
 class Object {
 public:
     Object();
     ~Object();
     
+    static void load(std::string filename);
+
     virtual void draw() = 0;
     void update();
     virtual CollisionBox getCollisionBox();

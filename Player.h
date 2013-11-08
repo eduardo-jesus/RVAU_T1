@@ -26,5 +26,7 @@ public:
     void setAlive(bool);
     bool isAlive();
 
+    void respawn(double x, double y);
+
     void updatePlayerAnimation(double elapsed_time);
 };

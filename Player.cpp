@@ -12,6 +12,11 @@ Player::Player(void) {
     moving_up_ = false;
     moving_down_ = false;
     alive_ = false;
+
+    width_ = 10;
+    height_ = 10;
+
+    load("Data/teste.obj");
 }
 
 Player::Player(double x, double y) {
@@ -24,6 +29,7 @@ Player::Player(double x, double y) {
 
     width_ = 10;
     height_ = 10;
+
 }
 
 Player::~Player(void) {
@@ -76,6 +82,13 @@ void Player::updatePlayerAnimation(double elapsed_time) {
     }
 
     moving_up_ = moving_down_ = false;
+}
+
+void Player::respawn(double x, double y) {
+    position_.x = x;
+    position_.y = y;
+    moving_up_ = moving_down_ = false;
+    alive_ = true;
 }
 
 CollisionBox Player::getCollisionBox() {

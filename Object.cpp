@@ -1,6 +1,9 @@
 #include "Object.h"
 
-#include <GL/glut.h>
+#include <iostream>
+#include <vector>
+
+#include "tiny_obj_loader.hpp"
 
 Object::Object() {
 }
@@ -8,12 +11,68 @@ Object::Object() {
 Object::~Object() {
 }
 
-void Object::draw() {
-    glPushMatrix();
+void Object::load(std::string filename) {
+    std::string dir = "";
+    std::string::size_type last_slash = filename.find_last_of("/");
+    if (last_slash != std::string::npos) {
+        dir = filename.substr(0, last_slash + 1);
+    }
 
-    glEnd();
-    glPopMatrix();
+    std::vector<tinyobj::shape_t> shapes;
+    std::string err = tinyobj::LoadObj(shapes, filename.c_str(), dir.c_str());
+    
+    if (!err.empty()) {
+        std::cerr << err << std::endl;
+        exit(-1);
+    }
+
+    std::cout << "# of shapes: " << shapes.size() << std::endl;
+
+    std::vector<Triangle> triangles;
+
+    for (size_t i = 0; i < shapes.size(); ++i) {
+        std::vector<float> positions = shapes[i].mesh.positions;
+        std::vector<float> normals = shapes[i].mesh.normals;
+        std::vector<float> tex_coords = shapes[i].mesh.texcoords;
+        std::vector<unsigned int> indices = shapes[i].mesh.indices;
+
+        size_t num_normals = normals.size / 3;
+        size_t num_faces = indices.size() / 3;
+        size_t num_tex_coords = tex_coords.size() / 2;
+
+        for (size_t j = 0; j < num_faces; ++j) {
+            Triangle triangle;
+
+            for (size_t k = 0; k < 3; ++k) {
+                size_t index = indices[j * 3 + k];
+                
+                if (index < num_normals) {
+                    triangle.normals[k].x = normals[index * 3 + 0];
+                    triangle.normals[k].y = normals[index * 3 + 1];
+                    triangle.normals[k].z = normals[index * 3 + 2];
+                } else {
+                    triangle.normals[k] = Vector3(0.0, 0.0, 1.0);
+                }
+
+                if (index < num_tex_coords) {
+                    triangle.uvws[k].x = tex_coords[index * 2 + 0];
+                    triangle.uvws[k].y = tex_coords[index * 2 + 1];
+                } else {
+                    triangle.uvws[k] = Vector2(0.0, 0.0);
+                }
+
+                triangle.vertices[k].x = positions[index * 3 + 0];
+                triangle.vertices[k].y = positions[index * 3 + 1];
+                triangle.vertices[k].z = positions[index * 3 + 2];
+            }
+
+            triangles.push_back(triangle);
+        }
+    }
+
 }
+
+void Object::draw() {}
 
 void Object::update() {
 

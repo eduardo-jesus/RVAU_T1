@@ -12,7 +12,7 @@ Game::Game(void) {
     anim_millis_ = 30;
     previous_clock_ = clock();
     board_ = Board();
-    player_ = Player();
+    //player_ = Player();
     hole_ = Hole(0,0,40,40,100);
     spikes_ = Spikes(0,0,40,40);
 }
@@ -257,7 +257,7 @@ void Game::updatePlayer() {
         Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[SPAWN]);
 
         if(board_.isOnBoard(dist.x, dist.y)) {
-            player_ = Player(dist.x, dist.y);
+            player_.respawn(dist.x, dist.y);
         }
     }
 
