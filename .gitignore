@@ -12,7 +12,7 @@ Debug/
 Release/*
 !Release/*.dll
 !Release/Data/
-!Release/Data/materials/*.obj
+!Release/Data/models/*.obj
 
 x64/
 build/
