@@ -12,9 +12,8 @@ private:
     bool alive_;
     unsigned int n_deaths_;
 public:
-    Player(void);
-    Player(double, double);
-    ~Player(void);
+    Player();
+    ~Player();
 
     void draw();
     CollisionBox getCollisionBox();

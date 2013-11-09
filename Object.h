@@ -2,7 +2,9 @@
 #define _OBJECT_
 
 #include <vector>
+#include <map>
 
+#include "Material.hpp"
 #include "Math3D.hpp"
 #include "Pattern.h"
 #include "CollisionBox.h"
@@ -13,8 +15,13 @@ public:
     ~Object();
     
     void load(std::string filename);
-    void toVBO();
+    void toVBOs();
     void render();
+
+    void addMaterial(std::string name, Material material);
+    void addMaterial(Material material);
+    Material getMaterial(std::string name);
+    void applyMaterial(std::string name);
 
     virtual void draw() = 0;
     void update();
@@ -46,8 +53,13 @@ public:
     void setVisible(bool visible);
     bool isVisible();
 protected:
+    std::map<std::string, Material> materials_;
+    std::string last_used_material_;
+    
     std::vector<Triangle> triangles_;
     std::vector<VBO> vbos_;
+
+   
 
     Vector3 position_;
     Vector3 scale_;

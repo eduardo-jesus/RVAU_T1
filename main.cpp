@@ -1,5 +1,3 @@
-#pragma once
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -14,27 +12,35 @@
 
 #include "Game.h"
 
+int FRAME_RATE = 60;
+double TICK_RATE = 1.0 / FRAME_RATE;
+int DELTA_T = 1000.0 / FRAME_RATE;
+
+
 Game game;
 
-void keyEvent(unsigned char key, int x, int y) {
-}
-
-void mainLoop(void) {
+void mainLoop() {
    game.mainLoop();
 }
 
 void updateAnimations(int dummy) {
     game.updateAnimations();
-    glutTimerFunc(30, updateAnimations, 0);
+    glutTimerFunc(DELTA_T, updateAnimations, 0);
+}
+
+void initialize(int argc, char **argv) {
+    glutInit(&argc, argv);
+
 }
 
 int main(int argc, char **argv) {
-    glutInit(&argc, argv);
+    initialize(argc, argv);
 
     game.init();
     
     arVideoCapStart();
-    glutTimerFunc(30, updateAnimations,0);
-    argMainLoop(NULL, keyEvent, mainLoop);
-    return (0);
+    glutTimerFunc(DELTA_T, updateAnimations, 0);
+    argMainLoop(NULL, NULL, mainLoop);
+    
+    return 0;
 }

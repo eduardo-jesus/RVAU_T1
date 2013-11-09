@@ -13,27 +13,16 @@ Player::Player(void) {
     moving_down_ = false;
     alive_ = false;
 
-    width_ = 10;
-    height_ = 10;
-
-    load("Data/teste.obj");
-}
-
-Player::Player(double x, double y) {
-    position_.x = x;
-    position_.y = y;
-
-    moving_up_ = false;
-    moving_down_ = false;
-    alive_ = true;
+    n_deaths_ = 0;
 
     width_ = 10;
     height_ = 10;
 
-    load("Data/teste.obj");
+    //load("Data/materials/test_textured_map.obj");
 }
 
-Player::~Player(void) {
+
+Player::~Player() {
 
 }
 
@@ -65,7 +54,7 @@ void Player::draw() {
     glPushMatrix();
 
     glTranslated(position_.x, position_.y, 10);
-    glScaled(10,10,20);
+    //glScaled(10,10,20);
     //glutSolidCube(1);
     render();
 

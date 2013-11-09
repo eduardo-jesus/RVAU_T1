@@ -91,7 +91,8 @@
     <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Spikes.cpp" />
-    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="stb_image.c" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="tiny_obj_loader.cpp" />
     <ClCompile Include="Math3D.cpp" />
   </ItemGroup>
@@ -106,7 +107,7 @@
     <ClInclude Include="Pattern.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Spikes.h" />
-    <ClInclude Include="Texture.hpp" />
+    <ClInclude Include="Material.hpp" />
     <ClInclude Include="tiny_obj_loader.hpp" />
     <ClInclude Include="Math3D.hpp" />
   </ItemGroup>

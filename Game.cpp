@@ -23,7 +23,6 @@ Game::~Game(void) {
 
 void Game::init() {
     char *vconf = "Data\\WDM_camera_flipV.xml";
-    //int xsize, ysize;
 
     char *cparam_name = "Data/camera_para.dat";
     //char *cparam_name = "Data/camera_para_busto.dat";
@@ -73,21 +72,28 @@ void Game::init() {
         fprintf(stderr, "Error: %s\n", glewGetErrorString(res));
     }
 
+    // Establish array contains vertices, normals and texture coordinates
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
     GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
     GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
     GLfloat   mat_flash_shiny[] = {50.0};
-    //GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0}; // Must be defined when drawing the objects
+    
     GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
     GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    //glLightfv(GL_LIGHT0, GL_POSITION, light_position); // Must be defined when drawing the objects
+    
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
     glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+
+    player_.load("Data/materials/test_textured_map.obj");
 }
 
 void Game::loadPatterns() {
@@ -494,7 +500,7 @@ void Game::drawBoard() {
 }
 
 void Game::writeText(std::string text) {
-    for(int i = 0; i < text.size(); ++i ) {
+    for(size_t i = 0; i < text.size(); ++i ) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
     }
 }
@@ -528,7 +534,6 @@ void Game::drawText(){
 
         writeText(ss.str());
     }
-	
 	
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();

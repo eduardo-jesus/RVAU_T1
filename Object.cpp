@@ -9,12 +9,15 @@
 #include "tiny_obj_loader.hpp"
 
 Object::Object() {
+    addMaterial("default", Material());
 }
 
 Object::~Object() {
 }
 
 void Object::load(std::string filename) {
+    addMaterial("default", Material());
+
     std::string dir = "";
     std::string::size_type last_slash = filename.find_last_of("/");
     if (last_slash != std::string::npos) {
@@ -31,20 +34,46 @@ void Object::load(std::string filename) {
 
     std::cout << "# of shapes: " << shapes.size() << std::endl;
 
-    std::vector<Triangle> triangles;
-
     for (size_t i = 0; i < shapes.size(); ++i) {
+
+        Material material;
+        for (size_t j = 0; j < 3; ++j) {
+            material.ambient[j] = shapes[i].material.ambient[j];
+            material.diffuse[j] = shapes[i].material.diffuse[j];
+            material.specular[j] = shapes[i].material.specular[j];
+            material.emission[j] = shapes[i].material.emission[j];
+            material.transmittance[j] = shapes[i].material.transmittance[j];
+        }
+
+        material.ambient[3] = 1.0f;
+        material.diffuse[3] = 1.0f;
+        material.specular[3] = 1.0f;
+        material.emission[3] = 1.0f;
+        material.transmittance[3] = 1.0f;
+
+        material.shininess[0] = shapes[i].material.shininess;
+
+        std::string texture_name = shapes[i].material.diffuse_texname;
+        if (texture_name.size() > 0) {
+            material.texture = Texture(texture_name);
+            material.has_texture = true;
+        }
+
+        addMaterial(shapes[i].material.name, material);
+
         std::vector<float> positions = shapes[i].mesh.positions;
         std::vector<float> normals = shapes[i].mesh.normals;
         std::vector<float> tex_coords = shapes[i].mesh.texcoords;
+
         std::vector<unsigned int> indices = shapes[i].mesh.indices;
 
         size_t num_normals = normals.size() / 3;
         size_t num_faces = indices.size() / 3;
         size_t num_tex_coords = tex_coords.size() / 2;
-
+       
         for (size_t j = 0; j < num_faces; ++j) {
             Triangle triangle;
+            triangle.material = shapes[i].material.name;
 
             for (size_t k = 0; k < 3; ++k) {
                 size_t index = indices[j * 3 + k];
@@ -69,24 +98,23 @@ void Object::load(std::string filename) {
                 triangle.vertices[k].z = positions[index * 3 + 2];
             }
 
-            triangles.push_back(triangle);
+            triangles_.push_back(triangle);
         }
     }
 
-    triangles_ = triangles;
+    //toVBOs();
 }
 
-void Object::toVBO() {
+void Object::toVBOs() {
     VBO vbo;
     vbo.vertices = 0;
     
-    // TODO: add material field
-    //vbo.material = triangles_[0].material; 
-    //std::string last_material = vbo.material;
+    vbo.material = triangles_[0].material; 
+    std::string last_material = vbo.material;
     for (size_t i = 0; i < triangles_.size(); ++i) {
         // If current triangle belongs to other shape than previous one,
         // upload current vertex data and generate new VBO.
-        /*if (triangles_[i].material != last_material) {
+        if (triangles_[i].material != last_material) {
             glGenBuffers(1, &vbo.id);
             glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
             glBufferData(GL_ARRAY_BUFFER, vbo.data.size() * sizeof(double), &vbo.data[0], GL_STATIC_DRAW);
@@ -96,7 +124,7 @@ void Object::toVBO() {
             vbo.vertices = 0;
             vbo.material = triangles_[i].material;
             last_material = vbo.material;
-        }*/
+        }
         for (int j = 0; j < 3; ++j) {
             vbo.data.push_back(triangles_[i].vertices[j].x);
             vbo.data.push_back(triangles_[i].vertices[j].y);
@@ -120,7 +148,9 @@ void Object::toVBO() {
 }
 
 void Object::render() {
+    last_used_material_ = "";
     for (size_t i = 0; i < triangles_.size(); ++i) {
+        applyMaterial(triangles_[i].material);
         glBegin(GL_TRIANGLES);
         for (int j = 0; j < 3; ++j) {
             glTexCoord2f(triangles_[i].uvws[j].x, triangles_[i].uvws[j].y);
@@ -129,6 +159,44 @@ void Object::render() {
         }
         glEnd();
     }
+}
+
+void Object::addMaterial(std::string name, Material material) {
+    materials_[name] = material;
+}
+
+void Object::addMaterial(Material material) {
+    materials_["default"] = material;
+}
+
+Material Object::getMaterial(std::string name) {
+    return materials_[name];
+}
+
+void Object::applyMaterial(std::string name) {
+    if (name == "") {
+        name = "default";
+    }
+
+    if (name == last_used_material_) {
+        return;
+    }
+
+    Material material = materials_[name];
+    glDisable(GL_COLOR_MATERIAL);
+
+    if (material.has_texture) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, material.texture.id);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    } else {
+        glDisable(GL_TEXTURE_2D);
+    }
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material.ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material.diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material.specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, material.shininess);
 }
 
 
