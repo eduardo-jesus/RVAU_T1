@@ -1,11 +1,9 @@
+#include <gl/glew.h>
+#include <AR\gsub.h>
+
 #include "Cannon.h"
 
-#include <GL/glut.h>
-#include "AR\gsub.h"
-
-#include <cstdio>
-#include <ctime>
-#include <cmath>
+#include "Math3D.hpp"
 
 Cannon::Cannon(void) {
     angle_ = 0.0;
@@ -44,32 +42,20 @@ bool Cannon::isShooting() {
     return shooting_;
 }
 
-void Cannon::shoot() {
-    printf("SHOOT %d\n", time(0));
-}
-
 void Cannon::draw() {
-    //double matrix[16];
-    //argConvGlpara(pattern_->getTrans(), matrix);
-    
     glPushMatrix();
-    //glLoadMatrixd(matrix);
 
     glTranslated(position_.x, position_.y, 5);
 
     glRotated(angle_, 0, 0, 1);
-    glRotated(90.0, 0, 1, 0);
-    //glutSolidCone(20, 100, 20, 20);
-    glutSolidCone(radius_, length_, 20, 20);
+    render();
 
     glPopMatrix();
 }
 
-#define PI 3.14159265
-
 CollisionBox Cannon::getCollisionBox() {
-    double direction_x_ = cos(angle_ * PI / 180.0);
-    double direction_y_ = sin(angle_ * PI / 180.0);
+    double direction_x_ = cos(angle_ * M_PI / 180.0);
+    double direction_y_ = sin(angle_ * M_PI / 180.0);
     
     double v1_x = position_.x + radius_ * (- direction_y_);
     double v1_y = position_.y + radius_ * direction_x_;

@@ -26,6 +26,8 @@ void Game::init() {
     loadPatterns();
 
     player_.load("Data/materials/test_textured_map.obj");
+    bullet_.load("Data/materials/bullet.obj");
+    cannon_.load("Data/materials/cannon.obj");
 }
 
 void Game::loadPatterns() {
@@ -176,9 +178,8 @@ void Game::updateCannon() {
         } else if(cannon_.canShoot()) {
             cannon_.setShooting(true);
             cannon_.setCanShoot(false);
-            //cannon_.shoot();
 
-            bullet_ = Bullet(distance.x, distance.y, cannon_.getAngle());
+            bullet_.newInstance(distance.x, distance.y, cannon_.getAngle());
         }
     } else {
         cannon_.setVisible(false);

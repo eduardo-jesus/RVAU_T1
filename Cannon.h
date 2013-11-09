@@ -20,9 +20,6 @@ public:
     bool canShoot();
     void setShooting(bool);
     bool isShooting();
-
-    void shoot();
-
     void draw();
     CollisionBox getCollisionBox();
 };

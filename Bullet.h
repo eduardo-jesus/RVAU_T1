@@ -16,9 +16,10 @@ private:
     double radius_;
     double length_;
 public:
-    Bullet(void);
-    Bullet(double x, double y, double angle);
-    ~Bullet(void);
+    Bullet();
+    ~Bullet();
+
+    void newInstance(double x, double y, double angle);
 
     void setPosition(double x, double y, double z);
     Vector3 getPosition();

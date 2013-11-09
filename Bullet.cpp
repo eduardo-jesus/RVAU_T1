@@ -1,28 +1,25 @@
-#include "Bullet.h"
-
-#include <GL\glut.h>
 #include <cmath>
-#include <cstdio>
 
-#define PI 3.14159265
+#include <gl/glew.h>
 
-Bullet::Bullet(void){
+#include "Bullet.h"
+#include "Math3D.hpp"
+
+Bullet::Bullet() {
+    moving_ = false;
 }
 
-Bullet::Bullet(double x, double y, double angle) {
-    position_ = Vector3(x, y, 20);
+Bullet::~Bullet() {
+}
+
+
+void Bullet::newInstance(double x, double y, double angle) {
+    position_ = Vector3(x, y, 20.0);
     setAngle(angle);
+
     speed_ = 20;
     moving_ = true;
-
-    radius_ = 25;
-    length_ = 50;
 }
-
-Bullet::~Bullet(void)
-{
-}
-
 
 void Bullet::setPosition(double x, double y, double z) {
     position_ = Vector3(x, y, z);
@@ -46,8 +43,8 @@ double Bullet::getSpeed() {
 
 void Bullet::setAngle(double angle) {
     angle_ = angle;
-    direction_x_ = cos(angle * PI / 180.0);
-    direction_y_ = sin(angle * PI / 180.0);
+    direction_x_ = cos(angle * M_PI / 180.0);
+    direction_y_ = sin(angle * M_PI / 180.0);
 }
 
 void Bullet::setDirectionX(double direction_x) {
@@ -79,10 +76,7 @@ void Bullet::draw() {
 
     glTranslated(position_.x, position_.y, position_.z);
     glRotated(angle_, 0, 0, 1);
-    glRotated(90.0, 0, 1, 0);
-    
-    //glutSolidCone(25, 50, 20, 20);
-    glutSolidCone(radius_, length_, 20, 20);
+    render();
     
     glPopMatrix();
 }
