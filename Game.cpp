@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include <cstdio>
+#include <sstream>
 
 #include <gl/glew.h>
 #include <gl/glut.h>
@@ -22,7 +23,7 @@ Game::~Game(void) {
 
 void Game::init() {
     char *vconf = "Data\\WDM_camera_flipV.xml";
-    int xsize, ysize;
+    //int xsize, ysize;
 
     char *cparam_name = "Data/camera_para.dat";
     //char *cparam_name = "Data/camera_para_busto.dat";
@@ -37,12 +38,12 @@ void Game::init() {
         exit(0);
     }
     /* find the size of the window */
-    if (arVideoInqSize(&xsize, &ysize) < 0) {
+    if (arVideoInqSize(&window_width_, &window_height_) < 0) {
         printf("[Game::init] Error finding window size");
         getchar();
         exit(0);
     }
-    printf("[Game::init] Image size (x,y) = (%d,%d)\n", xsize, ysize);
+    printf("[Game::init] Image size (x,y) = (%d,%d)\n", window_width_, window_height_);
 
     /* set the initial camera parameters */
     if (arParamLoad(cparam_name, 1, &wparam) < 0 ) {
@@ -51,14 +52,12 @@ void Game::init() {
         exit(0);
     }
 
-    arParamChangeSize(&wparam, xsize, ysize, &cparam);
+    arParamChangeSize(&wparam, window_width_, window_height_, &cparam);
     arInitCparam(&cparam);
     printf("*** Camera Parameter ***\n");
     arParamDisp(&cparam);
 
     loadPatterns();
-
-    
 
     /* open the graphics window */
     //argInit( &cparam, 1.0, 0, 2, 1, 0 );
@@ -363,7 +362,7 @@ void Game::drawScene() {
 
             if(player_.isAlive() && cannon_.isCollidingWith(&player_)) {
                 printf("Collision with cannon\n");
-                player_.setAlive(false);
+                player_.kill();
             }
         }
 
@@ -381,7 +380,7 @@ void Game::drawScene() {
             if(player_.isAlive()) {
                 if(spikes_.isCollidingWith(&player_)) {
                     printf("Collision with spikes\n");
-                    player_.setAlive(false);
+                    player_.kill();
                 }
             }
         }
@@ -389,17 +388,19 @@ void Game::drawScene() {
         if(bullet_.isMoving() && player_.isAlive()) {
             if(bullet_.isCollidingWith(&player_)) {
                 printf("COLLISION\n");
-                player_.setAlive(false);
+                player_.kill();
             }
         }
 
         if(hole_.isVisible() && player_.isAlive()) {
             if(hole_.isCollidingWith(&player_)) {
                 printf("Collision with hole\n");
-                player_.setAlive(false);
+                player_.kill();
             }
         }
     }
+
+    drawText();
 
     glDisable(GL_CULL_FACE);
     glDisable(GL_LIGHTING);
@@ -412,7 +413,12 @@ void Game::updateAnimations() {
 
     if(player_.isAlive()) {
         if(!board_.isOnBoard(&player_)) {
-            player_.setAlive(false);
+            if(board_.hasPlayerFinished(player_)) {
+                setFinished(true);
+            }
+            else {
+                player_.kill();
+            }
         }
         else {
             player_.updatePlayerAnimation(elapsed_time);
@@ -485,4 +491,55 @@ void Game::drawBoard() {
 
         hole_.draw();
     }
+}
+
+void Game::writeText(std::string text) {
+    for(int i = 0; i < text.size(); ++i ) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
+    }
+}
+
+void Game::drawText(){
+	glDisable(GL_LIGHTING);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+    gluOrtho2D(0,window_width_,0,window_height_);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	glColor3f(1.0,1.0,1.0);
+    glRasterPos2f(10,window_height_-30);
+	
+    std::stringstream ss;
+    ss << "Number of Deaths: " << player_.getNDeaths();
+	writeText(ss.str());
+
+    if(isFinished()) {
+        char *finished_message = "FINISH";
+        unsigned char* in = reinterpret_cast<unsigned char*>(finished_message);
+        int message_length = glutBitmapLength(GLUT_BITMAP_HELVETICA_18, in);
+
+        // 18pt -> 24 px
+        glRasterPos2f(window_width_/2 - message_length / 2, window_height_ / 2 + 12 );
+        
+        ss.str("");
+        ss << finished_message;
+
+        writeText(ss.str());
+    }
+	
+	
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glEnable(GL_LIGHTING);
+}
+
+void Game::setFinished(bool finished) {
+    finished_ = finished;
+}
+
+bool Game::isFinished() {
+    return finished_;
 }

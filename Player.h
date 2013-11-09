@@ -10,6 +10,7 @@ private:
     bool moving_up_;
     bool moving_down_;
     bool alive_;
+    unsigned int n_deaths_;
 public:
     Player(void);
     Player(double, double);
@@ -25,7 +26,11 @@ public:
     bool isMovingDown();
     void setAlive(bool);
     bool isAlive();
+    void setNDeaths(unsigned int n_deaths);
+    unsigned int getNDeaths();
+    void incNDeaths();
 
+    void kill();
     void respawn(double x, double y);
 
     void updatePlayerAnimation(double elapsed_time);

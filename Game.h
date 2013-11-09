@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <ctime>
+#include <string>
 
 #include "Pattern.h"
 #include "Board.h"
@@ -28,6 +29,9 @@ private:
     int UP;
     int DOWN;
 
+    int window_width_;
+    int window_height_;
+
     //ARToolkit needed variables
     ARUint8 *data_ptr_;
     ARUint8 *data_ptr_backup_;
@@ -44,6 +48,8 @@ private:
     //animation
     int anim_millis_;
     clock_t previous_clock_;
+
+    bool finished_;
 public:
     Game(void);
     ~Game(void);
@@ -67,11 +73,16 @@ public:
     void updateAnimations();
     
     void drawBoard();
+    void drawText();
+    void writeText(std::string text); 
     //remove later
     void drawRect(double x, double y, double gl_para[16]);
     void drawRect(double cx, double cy, double width, double height);
     void drawCone(double matrix[16], double angle);
 
     void resetVisiblePatterns();
+
+    void setFinished(bool finished);
+    bool isFinished();
 };
 
