@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Object.h"
+#include "Player.h"
 
 class Board {
 private:
@@ -26,5 +27,6 @@ public:
 
     bool isOnBoard(double x, double y);
     bool isOnBoard(Object* o);
+    bool hasPlayerFinished(Player player);
 };
 

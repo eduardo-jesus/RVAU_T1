@@ -65,3 +65,7 @@ bool Board::isOnBoard(Object* o) {
 
     return box.top < 0 && box.left > 0 && box.bottom > -height_ && box.right < width_;
 }
+
+bool Board::hasPlayerFinished(Player player) {
+    return player.getPosition().x + player.getWidth() / 2.0 >= width_;
+}

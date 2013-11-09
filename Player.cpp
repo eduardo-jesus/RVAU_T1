@@ -101,3 +101,20 @@ CollisionBox Player::getCollisionBox() {
 
     return CollisionBox(left, right, top, bottom);
 }
+
+void Player::setNDeaths(unsigned int n_deaths) {
+    n_deaths_ = n_deaths;
+}
+
+unsigned int Player::getNDeaths() {
+    return n_deaths_;
+}
+
+void Player::incNDeaths() {
+    n_deaths_++;
+}
+
+void Player::kill() {
+    setAlive(false);
+    incNDeaths();
+}
