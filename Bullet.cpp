@@ -14,8 +14,14 @@ Bullet::~Bullet() {
 
 
 void Bullet::newInstance(double x, double y, double angle) {
-    position_ = Vector3(x, y, 20.0);
-    setAngle(angle);
+    angle += 180;
+    direction_x_ = cos(angle * M_PI / 180.0);
+    direction_y_ = sin(angle * M_PI / 180.0);
+
+    x += 22.5 * direction_x_;
+    y += 22.5 * direction_y_;
+
+    position_ = Vector3(x, y, 8.0);
 
     speed_ = 20;
     moving_ = true;
@@ -39,12 +45,6 @@ void Bullet::setSpeed(double speed) {
 
 double Bullet::getSpeed() {
     return speed_;
-}
-
-void Bullet::setAngle(double angle) {
-    angle_ = angle;
-    direction_x_ = cos(angle * M_PI / 180.0);
-    direction_y_ = sin(angle * M_PI / 180.0);
 }
 
 void Bullet::setDirectionX(double direction_x) {
@@ -75,7 +75,6 @@ void Bullet::draw() {
     glPushMatrix();
 
     glTranslated(position_.x, position_.y, position_.z);
-    glRotated(angle_, 0, 0, 1);
     render();
     
     glPopMatrix();
@@ -88,46 +87,10 @@ void Bullet::updateBulletPosition(double elapsed_time) {
 }
 
 CollisionBox Bullet::getCollisionBox() {
-    // if we define dx=x2-x1 and dy=y2-y1, then the normals are (-dy, dx) and (dy, -dx).
-    double v1_x = position_.x + radius_ * (- direction_y_);
-    double v1_y = position_.y + radius_ * direction_x_;
-    double v2_x = position_.x + radius_ * direction_y_;
-    double v2_y = position_.y + radius_ * (- direction_x_);
-    double v3_x = position_.x + length_ * direction_x_;
-    double v3_y = position_.y + length_ * direction_y_;
-
-    double min_x = v1_x;
-    double max_x = v1_x;
-    double min_y = v1_y;
-    double max_y = v1_y;
-
-    if(v2_x < min_x) {
-        min_x = v2_x;
-    }
-    if(v3_x < min_x) {
-        min_x = v3_x;
-    }
-
-    if(v2_x > max_x) {
-        max_x = v2_x;
-    }
-    if(v3_x > max_x) {
-        max_x = v3_x;
-    }
-
-    if(v2_y < min_y) {
-        min_y = v2_y;
-    }
-    if(v3_y < min_y) {
-        min_y = v3_y;
-    }
-
-    if(v2_y > max_y) {
-        max_y = v2_y;
-    }
-    if(v3_y > max_y) {
-        max_y = v3_y;
-    }
+    double min_x = position_.x - 2.5;
+    double min_y = position_.y - 2.5;
+    double max_x = position_.x + 2.5;
+    double max_y = position_.y + 2.5;
 
     return CollisionBox(min_x, max_x, max_y, min_y);
 
