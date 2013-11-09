@@ -1,8 +1,8 @@
+#include <gl/glew.h>
+
 #include "Spikes.h"
 
-#include <GL\glut.h>
-
-Spikes::Spikes(void)
+Spikes::Spikes()
 {
 }
 
@@ -14,7 +14,7 @@ Spikes::Spikes(double x, double y, double width, double height) {
     height_ = height;
 }
 
-Spikes::~Spikes(void)
+Spikes::~Spikes()
 {
 }
 
@@ -29,7 +29,7 @@ bool Spikes::isVisible() {
 
 void Spikes::draw() {
     glPushMatrix();
-
+    /*
     GLfloat   mat_ambient[]     = {0.0, 1.0, 0.0, 1.0};
     GLfloat   mat_flash[]       = {0.0, 1.0, 0.0, 1.0};
     GLfloat   mat_flash_shiny[] = {50.0};
@@ -45,7 +45,8 @@ void Spikes::draw() {
     glVertex3d(position_.x - width_/2.0, position_.y - height_/2.0 , 1);
     glVertex3d(position_.x + width_/2.0, position_.y - height_/2.0 , 1);
     glEnd();
-
+    */
+    render();
     glPopMatrix();
 
 }

@@ -12,8 +12,8 @@ newmtl Iron
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0900 0.0900 0.0900
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Data/Materials/RustPeel.png
-	map_Kd Data/Materials/RustPeel.png
+	map_Ka Data/models/RustPeel.png
+	map_Kd Data/models/RustPeel.png
 
 newmtl Wood
 	Ns 10.0000
@@ -26,5 +26,5 @@ newmtl Wood
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Data/Materials/0111_wood_bark.jpg
-	map_Kd Data/Materials/0111_wood_bark.jpg
+	map_Ka Data/models/0111_wood_bark.jpg
+	map_Kd Data/models/0111_wood_bark.jpg

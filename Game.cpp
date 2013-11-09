@@ -24,10 +24,7 @@ Game::~Game() {
 
 void Game::init() {
     loadPatterns();
-
-    player_.load("Data/materials/test_textured_map.obj");
-    bullet_.load("Data/materials/bullet.obj");
-    cannon_.load("Data/materials/cannon.obj");
+    loadModels();
 }
 
 void Game::loadPatterns() {
@@ -68,6 +65,14 @@ void Game::loadPatterns() {
     Pattern down_pattern = Pattern("Data/patt.down", 40.0);
     DOWN = Pattern::loadPattern(down_pattern);
     patterns_[DOWN] = down_pattern;
+}
+
+void Game::loadModels() {
+    std::string base_path = "Data/models/"; 
+    //player_.load(base_path + "player.obj");
+    bullet_.load(base_path + "bullet.obj");
+    cannon_.load(base_path + "cannon.obj");
+    spikes_.load(base_path + "spikes.obj");
 }
 
 bool Game::grabVideoFrame() {

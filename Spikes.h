@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _SPIKES_H_
+#define _SPIKES_
 
 #include "Object.h"
 
@@ -16,4 +17,6 @@ public:
     void draw();
     CollisionBox getCollisionBox();
 };
+
+#endif /* _SPIKES_H_ */
 

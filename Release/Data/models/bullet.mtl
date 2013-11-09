@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 09.11.2013 12:25:27
+# File Created: 09.11.2013 18:25:22
 
-newmtl Material__2
+newmtl Iron
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -10,7 +10,7 @@ newmtl Material__2
 	illum 2
 	Ka 0.5880 0.5880 0.5880
 	Kd 0.5880 0.5880 0.5880
-	Ks 0.0000 0.0000 0.0000
+	Ks 0.0900 0.0900 0.0900
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Data/Materials/BubblyBricks.png
-	map_Kd Data/Materials/BubblyBricks.png
+	map_Ka Data/models/RustPeel.png
+	map_Kd Data/models/RustPeel.png

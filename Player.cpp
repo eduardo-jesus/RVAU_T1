@@ -17,8 +17,6 @@ Player::Player(void) {
 
     width_ = 10;
     height_ = 10;
-
-    //load("Data/materials/test_textured_map.obj");
 }
 
 
@@ -54,9 +52,9 @@ void Player::draw() {
     glPushMatrix();
 
     glTranslated(position_.x, position_.y, 10);
-    //glScaled(10,10,20);
-    //glutSolidCube(1);
-    render();
+    glScaled(10,10,20);
+    glutSolidCube(1);
+    //render();
 
     glPopMatrix();
 }

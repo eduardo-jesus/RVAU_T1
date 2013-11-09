@@ -54,9 +54,9 @@ public:
     Game(int window_width, int window_height);
     ~Game();
 
-    //ARToolkit related functions
     void init();
     void loadPatterns();
+    void loadModels();
     bool grabVideoFrame();
     void cleanup();
     int detectMarkers();
