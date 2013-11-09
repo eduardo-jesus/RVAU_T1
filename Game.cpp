@@ -8,90 +8,22 @@
 #include "AR\video.h"
 #include "AR\gsub.h"
 
-Game::Game(void) {
+Game::Game(int window_width, int window_height) {
+    window_width_ = window_width;
+    window_height_ = window_height;
+    finished_ = false;
     thresh_ = 100;
     anim_millis_ = 30;
     previous_clock_ = clock();
-    board_ = Board();
-    //player_ = Player();
     hole_ = Hole(0,0,40,40,100);
     spikes_ = Spikes(0,0,40,40);
 }
 
-Game::~Game(void) {
+Game::~Game() {
 }
 
 void Game::init() {
-    char *vconf = "Data\\WDM_camera_flipV.xml";
-
-    char *cparam_name = "Data/camera_para.dat";
-    //char *cparam_name = "Data/camera_para_busto.dat";
-    ARParam cparam;
-
-    ARParam  wparam;
-
-    /* open the video path */
-    if (arVideoOpen(vconf) < 0) {
-        printf("[Game::init] Error reading video configuration file");
-        getchar();
-        exit(0);
-    }
-    /* find the size of the window */
-    if (arVideoInqSize(&window_width_, &window_height_) < 0) {
-        printf("[Game::init] Error finding window size");
-        getchar();
-        exit(0);
-    }
-    printf("[Game::init] Image size (x,y) = (%d,%d)\n", window_width_, window_height_);
-
-    /* set the initial camera parameters */
-    if (arParamLoad(cparam_name, 1, &wparam) < 0 ) {
-        printf("[Game::init] Camera parameter load error !!\n");
-        getchar();
-        exit(0);
-    }
-
-    arParamChangeSize(&wparam, window_width_, window_height_, &cparam);
-    arInitCparam(&cparam);
-    printf("*** Camera Parameter ***\n");
-    arParamDisp(&cparam);
-
     loadPatterns();
-
-    /* open the graphics window */
-    //argInit( &cparam, 1.0, 0, 2, 1, 0 );
-    argInit( &cparam, 1.0, 0, 0, 0, 0 );
-    arFittingMode   = AR_FITTING_TO_IDEAL;
-    arImageProcMode = AR_IMAGE_PROC_IN_HALF;
-    argDrawMode     = AR_DRAW_BY_TEXTURE_MAPPING;
-    argTexmapMode   = AR_DRAW_TEXTURE_HALF_IMAGE;
-
-    GLenum res = glewInit();
-    if (GLEW_OK != res)    {
-        /* Problem: glewInit failed, something is seriously wrong. */
-        fprintf(stderr, "Error: %s\n", glewGetErrorString(res));
-    }
-
-    // Establish array contains vertices, normals and texture coordinates
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
-    GLfloat   mat_flash_shiny[] = {50.0};
-    
-    GLfloat   ambi[]            = {0.1, 0.1, 0.1, 0.1};
-    GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
-
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
 
     player_.load("Data/materials/test_textured_map.obj");
 }
@@ -338,8 +270,8 @@ void Game::drawScene() {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    glEnable(GL_CULL_FACE); /* Use back face culling to improve speed. */
-    glCullFace(GL_BACK); /* Cull only back faces. */
+    glEnable(GL_CULL_FACE); /* Use back face culling to improve speed */
+    glCullFace(GL_BACK); /* Cull only back faces */
 
     glMatrixMode(GL_MODELVIEW);
     glEnable(GL_LIGHTING);

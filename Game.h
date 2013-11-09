@@ -51,8 +51,8 @@ private:
 
     bool finished_;
 public:
-    Game(void);
-    ~Game(void);
+    Game(int window_width, int window_height);
+    ~Game();
 
     //ARToolkit related functions
     void init();
