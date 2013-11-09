@@ -3,7 +3,8 @@
 #include <iostream>
 #include <vector>
 
-#include <gl/glut.h>
+#include <gl/glew.h>
+//#include <gl/glut.h>
 
 #include "tiny_obj_loader.hpp"
 
@@ -74,6 +75,50 @@ void Object::load(std::string filename) {
 
     triangles_ = triangles;
 }
+
+void Object::toVBO() {
+    VBO vbo;
+    vbo.vertices = 0;
+    
+    // TODO: add material field
+    //vbo.material = triangles_[0].material; 
+    //std::string last_material = vbo.material;
+    for (size_t i = 0; i < triangles_.size(); ++i) {
+        // If current triangle belongs to other shape than previous one,
+        // upload current vertex data and generate new VBO.
+        /*if (triangles_[i].material != last_material) {
+            glGenBuffers(1, &vbo.id);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
+            glBufferData(GL_ARRAY_BUFFER, vbo.data.size() * sizeof(double), &vbo.data[0], GL_STATIC_DRAW);
+            vbos_.push_back(vbo);
+
+            vbo = VBO();
+            vbo.vertices = 0;
+            vbo.material = triangles_[i].material;
+            last_material = vbo.material;
+        }*/
+        for (int j = 0; j < 3; ++j) {
+            vbo.data.push_back(triangles_[i].vertices[j].x);
+            vbo.data.push_back(triangles_[i].vertices[j].y);
+            vbo.data.push_back(triangles_[i].vertices[j].z);
+
+            vbo.data.push_back(triangles_[i].normals[j].x);
+            vbo.data.push_back(triangles_[i].normals[j].y);
+            vbo.data.push_back(triangles_[i].normals[j].z);
+
+            vbo.data.push_back(triangles_[i].uvws[j].x);
+            vbo.data.push_back(triangles_[i].uvws[j].y);
+
+            ++vbo.vertices;
+        }
+    }
+    glGenBuffers(1, &vbo.id);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
+    glBufferData(GL_ARRAY_BUFFER, vbo.data.size() * sizeof(double), &vbo.data[0], GL_STATIC_DRAW);
+
+    vbos_.push_back(vbo);
+}
+
 void Object::render() {
     for (size_t i = 0; i < triangles_.size(); ++i) {
         glBegin(GL_TRIANGLES);

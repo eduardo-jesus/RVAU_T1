@@ -3,7 +3,8 @@
 #include <string>
 
 #include <AR/ar.h>
-#include "Vector3.h"
+
+#include "Math3D.hpp"
 
 class Pattern {
 public:

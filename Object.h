@@ -3,16 +3,9 @@
 
 #include <vector>
 
-#include "Vector2.hpp"
-#include "Vector3.h"
+#include "Math3D.hpp"
 #include "Pattern.h"
 #include "CollisionBox.h"
-
-struct Triangle {
-    Vector3 vertices[3];
-    Vector3 normals[3];
-    Vector2 uvws[3];
-};
 
 class Object {
 public:
@@ -20,6 +13,7 @@ public:
     ~Object();
     
     void load(std::string filename);
+    void toVBO();
     void render();
 
     virtual void draw() = 0;
@@ -53,6 +47,7 @@ public:
     bool isVisible();
 protected:
     std::vector<Triangle> triangles_;
+    std::vector<VBO> vbos_;
 
     Vector3 position_;
     Vector3 scale_;

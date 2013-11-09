@@ -91,9 +91,9 @@
     <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Spikes.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tiny_obj_loader.cpp" />
-    <ClCompile Include="Vector2.cpp" />
-    <ClCompile Include="Vector3.cpp" />
+    <ClCompile Include="Math3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
@@ -106,9 +106,9 @@
     <ClInclude Include="Pattern.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Spikes.h" />
+    <ClInclude Include="Texture.hpp" />
     <ClInclude Include="tiny_obj_loader.hpp" />
-    <ClInclude Include="Vector2.hpp" />
-    <ClInclude Include="Vector3.h" />
+    <ClInclude Include="Math3D.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

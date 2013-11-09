@@ -1,6 +1,23 @@
-#include <cmath>
+#include "Math3D.hpp"
 
-#include "Vector3.h"
+Vector2::Vector2() {
+    x = 0.0;
+    y = 0.0;
+}
+
+Vector2::Vector2(double x, double y) {
+    this->x = x;
+    this->y = y;
+}
+
+Vector2::~Vector2() {
+
+}
+
+void Vector2::set(double x, double y) {
+    this->x = x;
+    this->y = y;
+}
 
 Vector3::Vector3() {
     x = 0.0;
@@ -83,4 +100,3 @@ Vector3 Vector3::operator / (const Vector3 &v) {
 
     return result;
 }
-
