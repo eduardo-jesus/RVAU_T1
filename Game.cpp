@@ -73,7 +73,7 @@ void Game::loadPatterns() {
 
 void Game::loadModels() {
     std::string base_path = "Data/models/"; 
-    //player_.load(base_path + "player.obj");
+
     bullet_.load(base_path + "bullet.obj");
     cannon_.load(base_path + "cannon.obj");
     spikes_.load(base_path + "spikes.obj");
@@ -84,7 +84,7 @@ void Game::loadModels() {
     board_.loadBoardModels(base_path + "tower.obj", base_path + "wall.obj", base_path + "fortress.obj");
     player_.loadPlayerModels(base_path + "player_body.obj", base_path + "player_arm.obj", base_path + "player_leg.obj");
     resize_.load(base_path + "resize.obj");
-    spawn_.load(base_path + "resize.obj");
+    spawn_.load(base_path + "spawn.obj");
 
 }
 
