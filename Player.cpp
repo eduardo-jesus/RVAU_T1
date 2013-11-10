@@ -68,11 +68,11 @@ void Player::draw() {
     glTranslated(position_.x, position_.y, 0);
     //glScaled(10,10,20);
     //glutSolidCube(1);
-    
-    left_arm_.draw();
-    left_leg_.draw();
-    right_arm_.draw();
-    right_leg_.draw();
+    glScaled(4,4,4);
+    //left_arm_.draw();
+    //left_leg_.draw();
+    //right_arm_.draw();
+    //right_leg_.draw();
     render();
 
     glPopMatrix();
@@ -93,11 +93,11 @@ void Player::updatePlayerAnimation(double elapsed_time) {
 }
 
 void Player::update(double elapsed_time) {
-    updatePlayerAnimation(elapsed_time);
+    /*updatePlayerAnimation(elapsed_time);
     left_arm_.update(elapsed_time);
     left_leg_.update(elapsed_time);
     right_arm_.update(elapsed_time);
-    right_leg_.update(elapsed_time);
+    right_leg_.update(elapsed_time);*/
 }
 
 void Player::respawn(double x, double y) {
