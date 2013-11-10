@@ -328,8 +328,8 @@ void Game::drawScene() {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    glEnable(GL_CULL_FACE); /* Use back face culling to improve speed */
-    glCullFace(GL_BACK); /* Cull only back faces */
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
     glMatrixMode(GL_MODELVIEW);
     glEnable(GL_LIGHTING);
@@ -356,7 +356,6 @@ void Game::drawScene() {
             cannon_.draw();
 
             if(player_.isAlive() && cannon_.isCollidingWith(&player_)) {
-                printf("Collision with cannon\n");
                 player_.kill();
             }
         }
@@ -378,7 +377,6 @@ void Game::drawScene() {
 
             if(player_.isAlive()) {
                 if(spikes_.isCollidingWith(&player_)) {
-                    printf("Collision with spikes\n");
                     player_.kill();
                 }
             }
@@ -386,7 +384,6 @@ void Game::drawScene() {
 
         if(bullet_.isMoving() && player_.isAlive()) {
             if(bullet_.isCollidingWith(&player_)) {
-                printf("COLLISION\n");
                 player_.kill();
                 bullet_.setMoving(false);
                 cannon_.setShooting(false);
@@ -395,7 +392,6 @@ void Game::drawScene() {
 
         if(hole_.isVisible() && player_.isAlive()) {
             if(hole_.isCollidingWith(&player_)) {
-                printf("Collision with hole\n");
                 player_.kill();
             }
         }
