@@ -10,9 +10,6 @@
 
 Debug/
 Release/*
-!Release/*.dll
-!Release/Data/
-!Release/Data/models/*.obj
 
 x64/
 build/
@@ -49,6 +46,10 @@ build/
 *.pidb
 *.log
 *.scc
+
+!Release/*.dll
+!Release/Data/
+!Release/Data/models/*.obj
 
 # Visual C++ cache files
 ipch/
