@@ -73,6 +73,7 @@ void Game::loadModels() {
     bullet_.load(base_path + "bullet.obj");
     cannon_.load(base_path + "cannon.obj");
     spikes_.load(base_path + "spikes.obj");
+    hole_.load(base_path + "hole.obj");
 }
 
 bool Game::grabVideoFrame() {
