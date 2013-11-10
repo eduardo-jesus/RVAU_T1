@@ -29,7 +29,6 @@ Texture::Texture() {
 }
 
 Texture::Texture(std::string filename) {
-    printf("%s\n", filename.c_str());
     glEnable(GL_TEXTURE_2D);
     id = 0;
     glGenTextures(1, &id);
