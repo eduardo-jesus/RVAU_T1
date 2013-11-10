@@ -80,6 +80,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Cannon.cpp" />
@@ -101,6 +102,7 @@
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arrow.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Cannon.h" />

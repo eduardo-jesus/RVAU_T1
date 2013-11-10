@@ -17,8 +17,9 @@ Game::Game(int window_width, int window_height) {
     previous_clock_ = clock();
     hole_ = Hole(0,0,40,40,100);
     spikes_ = Spikes(0,0,40,40);
+    down_button_.setDown(true);
 
-    floor_material_.texture = Texture();
+    floor_material_.texture = Texture("Data/models/ground.jpg");
     floor_material_.has_texture = true;
 }
 
@@ -78,18 +79,21 @@ void Game::loadModels() {
     spikes_.load(base_path + "spikes.obj");
     hole_.load(base_path + "hole.obj");
     rotate_.load(base_path + "rotate.obj");
+    up_button_.load(base_path + "arrow.obj");
+    down_button_.load(base_path + "arrow.obj");
     board_.loadBoardModels(base_path + "tower.obj", base_path + "wall.obj", base_path + "fortress.obj");
+
 }
 
 bool Game::grabVideoFrame() {
     if ((data_ptr_ = (ARUint8 *)arVideoGetImage()) == NULL) {
-         if(data_ptr_backup_ != NULL) {
+        if(data_ptr_backup_ != NULL) {
             data_ptr_ = data_ptr_backup_; 
-         } else {
+        } else {
             return false;
-         }
+        }
     } else {
-       data_ptr_backup_ = data_ptr_ ; 
+        data_ptr_backup_ = data_ptr_ ; 
     }
 
     return true;
@@ -257,6 +261,20 @@ void Game::updateControls() {
     } else {
         rotate_.setVisible(false);
     }
+
+    if(patterns_[UP].isVisible()) {
+        up_button_.setVisible(true);
+        argConvGlpara(patterns_[UP].getTrans(), up_button_.getTransMatrix());
+    } else {
+        up_button_.setVisible(false);
+    }
+
+    if(patterns_[DOWN].isVisible()) {
+        down_button_.setVisible(true);
+        argConvGlpara(patterns_[DOWN].getTrans(), down_button_.getTransMatrix());
+    } else {
+        down_button_.setVisible(false);
+    }
 }
 
 void Game::mainLoop() {
@@ -275,7 +293,7 @@ void Game::mainLoop() {
     drawScene();
 
     resetVisiblePatterns();
-    
+
     argSwapBuffers();
 }
 
@@ -354,15 +372,27 @@ void Game::drawScene() {
         }
     }
 
-    if(rotate_.isVisible()) {
-        rotate_.draw();
-    }
-
+    drawControls();
     drawText();
 
     glDisable(GL_CULL_FACE);
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
+}
+
+void Game::drawControls() {
+
+    if(rotate_.isVisible()) {
+        rotate_.draw();
+    }
+
+    if(up_button_.isVisible()) {
+        up_button_.draw();
+    }
+
+    if(down_button_.isVisible()) {
+        down_button_.draw();
+    }
 }
 
 void Game::updateAnimations() {
@@ -396,17 +426,6 @@ void Game::updateAnimations() {
     previous_clock_ = current_clock;
 }
 
-void Game::drawRect(double x, double y, double gl_para[16]) {
-
-    glBegin(GL_POLYGON);
-    glNormal3d(0,0,1);
-    glVertex3d(0,0,0);
-    glVertex3d(0,y,0);
-    glVertex3d(x,y,0);
-    glVertex3d(x,0,0);
-    glEnd();
-}
-
 void Game::drawRect(double cx, double cy, double width, double height) {
     glPushMatrix();
 
@@ -422,31 +441,76 @@ void Game::drawRect(double cx, double cy, double width, double height) {
     glPopMatrix();
 }
 
+void Game::drawRect(double cx, double cy, double width, double height, double start_u, double start_v) {
+    double end_u = start_u + width / TEX_UNIT_TO_UNIT;
+    double end_v = start_v + height / TEX_UNIT_TO_UNIT;
+
+    glPushMatrix();
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, floor_material_.texture.id);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, floor_material_.ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, floor_material_.diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, floor_material_.specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, floor_material_.shininess);
+
+    glTranslated(cx, cy, 0);
+    glBegin(GL_POLYGON);
+    glNormal3d(0,0,1);
+    glTexCoord2d(end_u, end_v);
+    glVertex3d(width/2.0,height/2.0,0);
+    glTexCoord2d(start_u, end_v);
+    glVertex3d(-width/2.0,height/2.0,0);
+    glTexCoord2d(start_u, start_v);
+    glVertex3d(-width/2.0,-height/2.0,0);
+    glTexCoord2d(end_u, start_v);
+    glVertex3d(width/2.0,-height/2.0,0);
+    glEnd();
+    glPopMatrix();
+}
+
 void Game::drawBoard() {
     board_.draw();
-    if(!hole_.isVisible()) {
-        drawRect(board_.getWidth()/2, -board_.getHeight()/2, board_.getWidth(), board_.getHeight());
-    } else {
-        double width_top_bottom = board_.getWidth();
-        double width_left = hole_.getPosition().x - hole_.getWidth()/2.0;
-        double width_right = board_.getWidth() - width_left - hole_.getWidth();
-        double heigth_top = -hole_.getPosition().y - hole_.getHeight()/2.0;
-        double height_middle = hole_.getHeight();
-        double height_down = board_.getHeight() - height_middle -heigth_top;
 
-        double top_cx = board_.getWidth()/2.0;
+    double width = board_.getWidth();
+    double height = board_.getHeight();
+    if(!hole_.isVisible()) {
+        drawRect(width/2, -height/2, width, height,0,0);
+    } else {
+        double hole_width = hole_.getWidth();
+        double hole_height = hole_.getHeight();
+
+        double width_top_bottom = width;
+        double width_left = hole_.getPosition().x - hole_width/2.0;
+        double width_right = width - width_left - hole_width;
+        double heigth_top = -hole_.getPosition().y - hole_height/2.0;
+        double height_middle = hole_height;
+        double height_down = height - height_middle -heigth_top;
+
+        double top_cx = width/2.0;
         double top_cy = - heigth_top / 2.0;
         double bottom_cx = top_cx;
         double bottom_cy = -(heigth_top + height_middle + height_down/2.0) ;
         double left_cx = width_left /2.0;
         double left_cy = -(heigth_top + height_middle/2.0);
-        double right_cx = width_left + hole_.getWidth() + width_right/2.0;
+        double right_cx = width_left + hole_width + width_right/2.0;
         double right_cy = left_cy;
 
-        drawRect(top_cx, top_cy, width_top_bottom, heigth_top);
-        drawRect(bottom_cx, bottom_cy, width_top_bottom, height_down);
-        drawRect(left_cx, left_cy, width_left, height_middle);
-        drawRect(right_cx, right_cy, width_right, height_middle);
+        double sides_v = height_down / TEX_UNIT_TO_UNIT;
+        double right_u = (width_left + hole_width) / TEX_UNIT_TO_UNIT;
+        double top_v = (height_down + height_middle) / TEX_UNIT_TO_UNIT;
+
+        //top rect
+        drawRect(top_cx, top_cy, width_top_bottom, heigth_top, 0, top_v);
+        //bottom rect
+        drawRect(bottom_cx, bottom_cy, width_top_bottom, height_down, 0, 0);
+        //left rect
+        drawRect(left_cx, left_cy, width_left, height_middle, 0, sides_v);
+        //right rect
+        drawRect(right_cx, right_cy, width_right, height_middle, right_u, top_v);
 
         hole_.draw();
     }
@@ -459,20 +523,20 @@ void Game::writeText(std::string text) {
 }
 
 void Game::drawText(){
-	glDisable(GL_LIGHTING);
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
+    glDisable(GL_LIGHTING);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
     gluOrtho2D(0,window_width_,0,window_height_);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	glColor3f(1.0,1.0,1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glColor3f(1.0,1.0,1.0);
     glRasterPos2f(10,window_height_-30);
-	
+
     std::stringstream ss;
     ss << "Number of Deaths: " << player_.getNDeaths();
-	writeText(ss.str());
+    writeText(ss.str());
 
     if(isFinished()) {
         char *finished_message = "FINISH";
@@ -481,17 +545,17 @@ void Game::drawText(){
 
         // 18pt -> 24 px
         glRasterPos2f(window_width_/2 - message_length / 2, window_height_ / 2 + 12 );
-        
+
         ss.str("");
         ss << finished_message;
 
         writeText(ss.str());
     }
-	
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_LIGHTING);
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glEnable(GL_LIGHTING);
 }
 
 void Game::setFinished(bool finished) {

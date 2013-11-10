@@ -13,6 +13,7 @@
 #include "Hole.h"
 #include "Spikes.h"
 #include "RotateButton.h"
+#include "Arrow.h"
 
 class Game {
 private:
@@ -46,6 +47,8 @@ private:
     Hole hole_;
     Spikes spikes_;
     RotateButton rotate_;
+    Arrow up_button_;
+    Arrow down_button_;
 
     //animation
     int anim_millis_;
@@ -54,6 +57,8 @@ private:
     bool finished_;
 
     Material floor_material_;
+
+#define TEX_UNIT_TO_UNIT 50.0;
 public:
     Game(int window_width, int window_height);
     ~Game();
@@ -76,12 +81,13 @@ public:
     void drawScene();
     void updateAnimations();
     
+    void drawControls();
     void drawBoard();
     void drawText();
     void writeText(std::string text); 
     //remove later
-    void drawRect(double x, double y, double gl_para[16]);
     void drawRect(double cx, double cy, double width, double height);
+    void drawRect(double cx, double cy, double width, double height, double start_u, double start_v);
     void drawCone(double matrix[16], double angle);
 
     void resetVisiblePatterns();
