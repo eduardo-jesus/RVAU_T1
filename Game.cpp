@@ -74,6 +74,7 @@ void Game::loadModels() {
     cannon_.load(base_path + "cannon.obj");
     spikes_.load(base_path + "spikes.obj");
     hole_.load(base_path + "hole.obj");
+    rotate_.load(base_path + "rotate.obj");
 }
 
 bool Game::grabVideoFrame() {
@@ -246,7 +247,12 @@ void Game::updateTraps() {
 }
 
 void Game::updateControls() {
-
+    /*if(patterns_[ROTATE_CANNON].isVisible()) {
+        rotate_.setVisible(true);
+        argConvGlpara(patterns_[ROTATE_CANNON].getTrans(), rotate_.getTransMatrix());
+    } else {
+        rotate_.setVisible(false);
+    }*/
 }
 
 void Game::mainLoop() {
@@ -344,6 +350,10 @@ void Game::drawScene() {
             }
         }
     }
+
+    /*if(rotate_.isVisible()) {
+        rotate_.draw();
+    }*/
 
     drawText();
 

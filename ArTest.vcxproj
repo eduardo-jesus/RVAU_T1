@@ -90,6 +90,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RotateButton.cpp" />
     <ClCompile Include="Spikes.cpp" />
     <ClCompile Include="stb_image.c" />
     <ClCompile Include="Material.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Pattern.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RotateButton.h" />
     <ClInclude Include="Spikes.h" />
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="tiny_obj_loader.hpp" />

@@ -12,6 +12,7 @@
 #include "Bullet.h"
 #include "Hole.h"
 #include "Spikes.h"
+#include "RotateButton.h"
 
 class Game {
 private:
@@ -44,6 +45,7 @@ private:
     Bullet bullet_;
     Hole hole_;
     Spikes spikes_;
+    RotateButton rotate_;
 
     //animation
     int anim_millis_;
