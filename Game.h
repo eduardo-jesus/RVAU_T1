@@ -14,6 +14,7 @@
 #include "Spikes.h"
 #include "RotateButton.h"
 #include "Arrow.h"
+#include "ResizeMarker.h"
 
 class Game {
 private:
@@ -49,6 +50,7 @@ private:
     RotateButton rotate_;
     Arrow up_button_;
     Arrow down_button_;
+    ResizeMarker resize_;
 
     //animation
     int anim_millis_;

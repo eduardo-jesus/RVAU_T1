@@ -83,6 +83,7 @@ void Game::loadModels() {
     down_button_.load(base_path + "arrow.obj");
     board_.loadBoardModels(base_path + "tower.obj", base_path + "wall.obj", base_path + "fortress.obj");
     player_.loadPlayerModels(base_path + "player_body.obj", base_path + "player_arm.obj", base_path + "player_leg.obj");
+    resize_.load(base_path + "resize.obj");
 
 }
 
@@ -280,6 +281,13 @@ void Game::updateControls() {
     } else {
         down_button_.setVisible(false);
     }
+
+    if(patterns_[RIGHT_BOTTOM_CORNER].isVisible()) {
+        resize_.setVisible(true);
+        argConvGlpara(patterns_[RIGHT_BOTTOM_CORNER].getTrans(), resize_.getTransMatrix());
+    } else {
+        resize_.setVisible(false);
+    }
 }
 
 void Game::mainLoop() {
@@ -399,6 +407,10 @@ void Game::drawControls() {
 
     if(down_button_.isVisible()) {
         down_button_.draw();
+    }
+
+    if(resize_.isVisible()) {
+        resize_.draw();
     }
 }
 
