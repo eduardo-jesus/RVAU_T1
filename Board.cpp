@@ -7,6 +7,16 @@ Board::Board(void) {
     width_ = MIN_WIDTH;
     height_ = MIN_HEIGHT;
 
+    top_tower_box_.left = width_ - 20;
+    top_tower_box_.right = width_ + 20;
+    top_tower_box_.left = width_ - 20;
+    bottom_tower_box_.left = width_ - 20;
+    bottom_tower_box_.right = width_ + 20;
+    top_tower_box_.top = 20;
+    top_tower_box_.bottom = - 20;
+    bottom_tower_box_.top = -height_ + 20;
+    bottom_tower_box_.bottom = -height_ - 20;
+
     visible_ = false;
 }
 
@@ -18,14 +28,22 @@ void Board::setDimensions(double right_bottom_x, double right_bottom_y) {
     if(right_bottom_x < 0 || right_bottom_y > 0) {
         return;
     }
-    
+
     if(right_bottom_x > MIN_WIDTH && (int) right_bottom_x % 10 == 0) {
         width_ = right_bottom_x;
+
+        top_tower_box_.left = width_ - 20;
+        top_tower_box_.right = width_ + 20;
+        bottom_tower_box_.left = width_ - 20;
+        bottom_tower_box_.right = width_ + 20;
     }
 
     right_bottom_y *= -1;
     if(right_bottom_y > MIN_HEIGHT && (int) right_bottom_y % 10 == 0 ) {
         height_ = right_bottom_y;
+
+        bottom_tower_box_.top = -height_ + 20;
+        bottom_tower_box_.bottom = -height_ - 20;
     }
 }
 
@@ -36,7 +54,8 @@ bool Board::isOnBoard(double x, double y) {
 bool Board::isOnBoard(Object* o) {
     CollisionBox box = o->getCollisionBox();
 
-    return box.top < 0 && box.left > 0 && box.bottom > -height_ && box.right < width_;
+    return box.top < 0 && box.left > 0 && box.bottom > -height_ && box.right < width_ 
+        && !o->isCollidingWith(top_tower_box_) && !o->isCollidingWith(bottom_tower_box_);
 }
 
 bool Board::hasPlayerFinished(Player player) {
@@ -78,10 +97,10 @@ void Board::drawWalls() {
 
     double wall_bottom_y = -height_ - 5;
     double wall_right_x = width_ + 5;
-     
+
     for(int i = 0; i < horizontal_steps; ++i) {
         delta_x = 10 * i + 5;
-        
+
         glPushMatrix();
         glTranslated(delta_x, 5, 0);
         wall_.render();
@@ -92,10 +111,10 @@ void Board::drawWalls() {
         wall_.render();
         glPopMatrix();
     }
-    
+
     for(int i = 0; i < vertical_steps; ++i) {
         delta_y = -10 * i + 5;
-        
+
         glPushMatrix();
         glTranslated(-5, delta_y, 0);
         wall_.render();
@@ -105,7 +124,7 @@ void Board::drawWalls() {
     double right_vertical_steps = vertical_steps / 2 - 1;
     for(int i = 0; i < right_vertical_steps; ++i) {
         delta_y = -10 * i - 5;
-        
+
         glPushMatrix();
         glTranslated(wall_right_x, delta_y, 0);
         wall_.render();
@@ -116,7 +135,7 @@ void Board::drawWalls() {
     double right_second_segment_y = - right_vertical_steps * 10 - 40 - 5;
     for(int i = 0; i < right_vertical_steps; ++i) {
         delta_y = -10 * i + right_second_segment_y;
-        
+
         glPushMatrix();
         glTranslated(wall_right_x, delta_y, 0);
         wall_.render();

@@ -2,8 +2,8 @@
 
 #include <GL/glut.h>
 
-const double Player::X_SPEED = 25;
-const double Player::Y_SPEED = 50;
+const double Player::X_SPEED = 10;
+const double Player::Y_SPEED = 20;
 
 Player::Player(void) {
     position_.x = 0;
@@ -18,10 +18,10 @@ Player::Player(void) {
     width_ = 3;//10;
     height_ = 4.8;//10;
 
-    left_arm_.instantiate(Vector3(0,2,6.8), 20, 0, true);
-    left_leg_.instantiate(Vector3(0,2,3.5), 0, 0, false);
-    right_arm_.instantiate(Vector3(0,-2,6.8), -20, 0, false);
-    right_leg_.instantiate(Vector3(0,-2,3.5), 0, 0, true);
+    left_arm_.instantiate(Vector3(0,1,6.8), 40, 0, true);
+    left_leg_.instantiate(Vector3(0,1,3.5), 0, 0, false);
+    right_arm_.instantiate(Vector3(0,-1,6.8), -40, 0, false);
+    right_leg_.instantiate(Vector3(0,-1,3.5), 0, 0, true);
 
 }
 
@@ -68,11 +68,11 @@ void Player::draw() {
     glTranslated(position_.x, position_.y, 0);
     //glScaled(10,10,20);
     //glutSolidCube(1);
-    glScaled(4,4,4);
-    //left_arm_.draw();
-    //left_leg_.draw();
-    //right_arm_.draw();
-    //right_leg_.draw();
+    glScaled(2,2,2);
+    left_arm_.draw();
+    left_leg_.draw();
+    right_arm_.draw();
+    right_leg_.draw();
     render();
 
     glPopMatrix();
@@ -93,11 +93,11 @@ void Player::updatePlayerAnimation(double elapsed_time) {
 }
 
 void Player::update(double elapsed_time) {
-    /*updatePlayerAnimation(elapsed_time);
+    updatePlayerAnimation(elapsed_time);
     left_arm_.update(elapsed_time);
     left_leg_.update(elapsed_time);
     right_arm_.update(elapsed_time);
-    right_leg_.update(elapsed_time);*/
+    right_leg_.update(elapsed_time);
 }
 
 void Player::respawn(double x, double y) {

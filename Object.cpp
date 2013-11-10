@@ -317,6 +317,34 @@ bool Object::isCollidingWith(Object* obj) {
     return true;
 }
 
+bool Object::isCollidingWith(CollisionBox box) {
+
+    CollisionBox a = getCollisionBox();
+    CollisionBox b = box;
+
+    if(a.bottom >= b.top)
+    {
+        return false;
+    }
+    
+    if(a.top <= b.bottom)
+    {
+        return false;
+    }
+    
+    if(a.right <= b.left)
+    {
+        return false;
+    }
+    
+    if(a.left >= b.right)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 void Object::setVisible(bool visible) {
     visible_ = visible;
 }

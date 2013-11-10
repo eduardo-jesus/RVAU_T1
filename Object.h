@@ -49,6 +49,7 @@ public:
     double getHeight();
 
     bool isCollidingWith(Object*);
+    bool isCollidingWith(CollisionBox box);
 
     void setVisible(bool visible);
     bool isVisible();

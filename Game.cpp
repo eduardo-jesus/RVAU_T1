@@ -183,19 +183,25 @@ void Game::updateCannon() {
 
         cannon_.setX(distance.x);
         cannon_.setY(distance.y);
-        cannon_.setVisible(true);
-        if(patterns_[ROTATE_CANNON].isVisible()) {
-            double angle = Pattern::angle(patterns_[CANNON], patterns_[ROTATE_CANNON]);
-            cannon_.setAngle(angle);
 
-            if(!cannon_.isShooting()) {
-                cannon_.setCanShoot(true);
+        if(board_.isOnBoard(cannon_.getX(), cannon_.getY())) {
+            cannon_.setVisible(true);
+            if(patterns_[ROTATE_CANNON].isVisible()) {
+                double angle = Pattern::angle(patterns_[CANNON], patterns_[ROTATE_CANNON]);
+                cannon_.setAngle(angle);
+
+                if(!cannon_.isShooting()) {
+                    cannon_.setCanShoot(true);
+                }
+            } else if(cannon_.canShoot()) {
+                cannon_.setShooting(true);
+                cannon_.setCanShoot(false);
+
+                bullet_.newInstance(distance.x, distance.y, cannon_.getAngle());
             }
-        } else if(cannon_.canShoot()) {
-            cannon_.setShooting(true);
-            cannon_.setCanShoot(false);
-
-            bullet_.newInstance(distance.x, distance.y, cannon_.getAngle());
+        }
+        else {
+            cannon_.setVisible(false);
         }
     } else {
         cannon_.setVisible(false);
@@ -223,7 +229,6 @@ void Game::updatePlayer() {
 
 void Game::updateTraps() {
     if (patterns_[HOLE].isVisible()) {
-        hole_.setVisible(true);
         Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[HOLE]);
         hole_.setX(dist.x);
         hole_.setY(dist.y);
@@ -239,7 +244,6 @@ void Game::updateTraps() {
     }
 
     if (patterns_[SPIKES].isVisible()) {
-        spikes_.setVisible(true);
         Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[SPIKES]);
         spikes_.setX(dist.x);
         spikes_.setY(dist.y);
@@ -362,6 +366,8 @@ void Game::drawScene() {
             if(bullet_.isCollidingWith(&player_)) {
                 printf("COLLISION\n");
                 player_.kill();
+                bullet_.setMoving(false);
+                cannon_.setShooting(false);
             }
         }
 
@@ -404,13 +410,13 @@ void Game::updateAnimations() {
         if(!board_.isOnBoard(&player_)) {
             if(board_.hasPlayerFinished(player_)) {
                 setFinished(true);
+                player_.setVisible(false);
             }
             else {
                 player_.kill();
             }
         }
         else {
-            //player_.updatePlayerAnimation(elapsed_time);
             player_.update(elapsed_time);
         }
     }
@@ -512,7 +518,7 @@ void Game::drawBoard() {
         //left rect
         drawRect(left_cx, left_cy, width_left, height_middle, 0, sides_v);
         //right rect
-        drawRect(right_cx, right_cy, width_right, height_middle, right_u, top_v);
+        drawRect(right_cx, right_cy, width_right, height_middle, right_u, sides_v);
 
         hole_.draw();
     }

@@ -18,6 +18,8 @@ private:
     Fortress fortress_;
     Wall wall_;
     Tower tower_;
+    CollisionBox top_tower_box_;
+    CollisionBox bottom_tower_box_;
 
 #define MIN_WIDTH  200
 #define MIN_HEIGHT 100

@@ -56,14 +56,14 @@ void Member::update(double elapsed_time) {
 
     if(rotate_front_) {
         y_angle_ -= delta_ang;
-        if(y_angle_ < - MAX_ROT ) {
+        if(y_angle_ < - MAX_ROT) {
             rotate_front_ = false;
         }
     } else {
         y_angle_ += delta_ang;
         
-        if(y_angle_ > MAX_ROT ) {
-            rotate_front_ = false;
+        if(y_angle_ > MAX_ROT) {
+            rotate_front_ = true;
         }
     }
 }

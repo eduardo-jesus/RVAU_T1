@@ -11,8 +11,8 @@ private:
 
     bool rotate_front_;
 
-#define MAX_ROT 70.0
-#define ROT_SPEED 20.0
+#define MAX_ROT 45.0
+#define ROT_SPEED 100.0
 public:
     Member(void);
     ~Member(void);
