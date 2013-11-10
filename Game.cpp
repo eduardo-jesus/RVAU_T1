@@ -445,30 +445,32 @@ void Game::drawRect(double cx, double cy, double width, double height, double st
 void Game::drawBoard() {
     board_.draw();
 
+    double width = board_.getWidth();
+    double height = board_.getHeight();
     if(!hole_.isVisible()) {
-        double width = board_.getWidth();
-        double height = board_.getHeight();
-        //drawRect(board_.getWidth()/2, -board_.getHeight()/2, board_.getWidth(), board_.getHeight());
         drawRect(width/2, -height/2, width, height,0,0);
     } else {
-        double width_top_bottom = board_.getWidth();
-        double width_left = hole_.getPosition().x - hole_.getWidth()/2.0;
-        double width_right = board_.getWidth() - width_left - hole_.getWidth();
-        double heigth_top = -hole_.getPosition().y - hole_.getHeight()/2.0;
-        double height_middle = hole_.getHeight();
-        double height_down = board_.getHeight() - height_middle -heigth_top;
+        double hole_width = hole_.getWidth();
+        double hole_height = hole_.getHeight();
 
-        double top_cx = board_.getWidth()/2.0;
+        double width_top_bottom = width;
+        double width_left = hole_.getPosition().x - hole_width/2.0;
+        double width_right = width - width_left - hole_width;
+        double heigth_top = -hole_.getPosition().y - hole_height/2.0;
+        double height_middle = hole_height;
+        double height_down = height - height_middle -heigth_top;
+
+        double top_cx = width/2.0;
         double top_cy = - heigth_top / 2.0;
         double bottom_cx = top_cx;
         double bottom_cy = -(heigth_top + height_middle + height_down/2.0) ;
         double left_cx = width_left /2.0;
         double left_cy = -(heigth_top + height_middle/2.0);
-        double right_cx = width_left + hole_.getWidth() + width_right/2.0;
+        double right_cx = width_left + hole_width + width_right/2.0;
         double right_cy = left_cy;
 
         double sides_v = height_down / TEX_UNIT_TO_UNIT;
-        double right_u = (width_left + hole_.getWidth()) / TEX_UNIT_TO_UNIT;
+        double right_u = (width_left + hole_width) / TEX_UNIT_TO_UNIT;
         double top_v = (height_down + height_middle) / TEX_UNIT_TO_UNIT;
 
         //top rect
