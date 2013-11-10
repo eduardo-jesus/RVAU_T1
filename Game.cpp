@@ -84,6 +84,7 @@ void Game::loadModels() {
     board_.loadBoardModels(base_path + "tower.obj", base_path + "wall.obj", base_path + "fortress.obj");
     player_.loadPlayerModels(base_path + "player_body.obj", base_path + "player_arm.obj", base_path + "player_leg.obj");
     resize_.load(base_path + "resize.obj");
+    spawn_.load(base_path + "resize.obj");
 
 }
 
@@ -214,12 +215,21 @@ void Game::updatePlayer() {
         return;
     }
 
-    if(patterns_[SPAWN].isVisible() && !player_.isAlive()) {
+    if(patterns_[SPAWN].isVisible()) {
         Vector3 dist = Pattern::distance(patterns_[LEFT_TOP_CORNER], patterns_[SPAWN]);
 
         if(board_.isOnBoard(dist.x, dist.y)) {
-            player_.respawn(dist.x, dist.y);
+            spawn_.setVisible(true);
+            spawn_.setX(dist.x);
+            spawn_.setY(dist.y);
+            if(!player_.isAlive()) {
+                player_.respawn(dist.x, dist.y);
+            }
+        } else {
+            spawn_.setVisible(false);
         }
+    } else {
+        spawn_.setVisible(false);
     }
 
     if (player_.isAlive()) {
@@ -351,7 +361,11 @@ void Game::drawScene() {
             }
         }
 
-        if(player_.isAlive()) {
+        if(spawn_.isVisible()) {
+            spawn_.draw();
+        }
+
+        if(player_.isAlive() ) {
             player_.draw();
         }
 
@@ -422,7 +436,7 @@ void Game::updateAnimations() {
         if(!board_.isOnBoard(&player_)) {
             if(board_.hasPlayerFinished(player_)) {
                 setFinished(true);
-                player_.setVisible(false);
+                player_.setAlive(false);
             }
             else {
                 player_.kill();
