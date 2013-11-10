@@ -17,6 +17,9 @@ Game::Game(int window_width, int window_height) {
     previous_clock_ = clock();
     hole_ = Hole(0,0,40,40,100);
     spikes_ = Spikes(0,0,40,40);
+
+    floor_material_.texture = Texture();
+    floor_material_.has_texture = true;
 }
 
 Game::~Game() {

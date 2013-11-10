@@ -52,6 +52,8 @@ private:
     clock_t previous_clock_;
 
     bool finished_;
+
+    Material floor_material_;
 public:
     Game(int window_width, int window_height);
     ~Game();

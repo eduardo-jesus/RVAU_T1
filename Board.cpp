@@ -28,22 +28,6 @@ void Board::setDimensions(double right_bottom_x, double right_bottom_y) {
         height_ = right_bottom_y;
     }
 }
-/*
-double Board::getWidth() {
-    return width_;
-}
-
-double Board::getHeight() {
-    return height_;
-}
-
-void Board::setVisible(bool visible) {
-    visible_ = visible;
-}
-
-bool Board::isVisible() {
-    return visible_;
-}*/
 
 bool Board::isOnBoard(double x, double y) {
     return !(x < 0 || x > width_ || y > 0 || y < -height_);
@@ -141,7 +125,7 @@ void Board::drawWalls() {
 
     double fortress_y = - floor(height_ / 2);
     glPushMatrix();
-    glTranslated(width_, fortress_y, 0);
+    glTranslated(width_ - 5, fortress_y, 0);
     fortress_.render();
     glPopMatrix();
 }
