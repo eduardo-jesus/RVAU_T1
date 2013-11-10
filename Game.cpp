@@ -138,9 +138,9 @@ int Game::detectMarkers() {
     if (updateBoard()) {
         updateCannon();
         updatePlayer();
-        updateTraps();
-        updateControls();
+        updateTraps();   
     }
+    updateControls();
 
     return marker_num;
 }
@@ -247,12 +247,12 @@ void Game::updateTraps() {
 }
 
 void Game::updateControls() {
-    /*if(patterns_[ROTATE_CANNON].isVisible()) {
+    if(patterns_[ROTATE_CANNON].isVisible()) {
         rotate_.setVisible(true);
         argConvGlpara(patterns_[ROTATE_CANNON].getTrans(), rotate_.getTransMatrix());
     } else {
         rotate_.setVisible(false);
-    }*/
+    }
 }
 
 void Game::mainLoop() {
@@ -305,7 +305,6 @@ void Game::drawScene() {
         GLfloat light_position[]  = {100.0,-200.0,200.0,0.0};
         glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-        //drawRect(board_.getWidth(), board_.getHeight(), gl_param);
         drawBoard();
 
         if(cannon_.isVisible()) {
@@ -351,9 +350,9 @@ void Game::drawScene() {
         }
     }
 
-    /*if(rotate_.isVisible()) {
+    if(rotate_.isVisible()) {
         rotate_.draw();
-    }*/
+    }
 
     drawText();
 
