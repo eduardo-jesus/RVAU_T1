@@ -14,6 +14,8 @@
 #include "Spikes.h"
 #include "RotateButton.h"
 #include "Arrow.h"
+#include "ResizeMarker.h"
+#include "SpawnMarker.h"
 
 class Game {
 private:
@@ -49,6 +51,8 @@ private:
     RotateButton rotate_;
     Arrow up_button_;
     Arrow down_button_;
+    ResizeMarker resize_;
+    SpawnMarker spawn_;
 
     //animation
     int anim_millis_;
@@ -85,10 +89,9 @@ public:
     void drawBoard();
     void drawText();
     void writeText(std::string text); 
-    //remove later
+
     void drawRect(double cx, double cy, double width, double height);
     void drawRect(double cx, double cy, double width, double height, double start_u, double start_v);
-    void drawCone(double matrix[16], double angle);
 
     void resetVisiblePatterns();
 
