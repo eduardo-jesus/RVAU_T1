@@ -17,6 +17,7 @@ Game::Game(int window_width, int window_height) {
     previous_clock_ = clock();
     hole_ = Hole(0,0,40,40,100);
     spikes_ = Spikes(0,0,40,40);
+    down_button_.setDown(true);
 
     floor_material_.texture = Texture("Data/models/ground.jpg");
     floor_material_.has_texture = true;
@@ -78,7 +79,10 @@ void Game::loadModels() {
     spikes_.load(base_path + "spikes.obj");
     hole_.load(base_path + "hole.obj");
     rotate_.load(base_path + "rotate.obj");
+    up_button_.load(base_path + "arrow.obj");
+    down_button_.load(base_path + "arrow.obj");
     board_.loadBoardModels(base_path + "tower.obj", base_path + "wall.obj", base_path + "fortress.obj");
+
 }
 
 bool Game::grabVideoFrame() {
@@ -257,6 +261,20 @@ void Game::updateControls() {
     } else {
         rotate_.setVisible(false);
     }
+
+    if(patterns_[UP].isVisible()) {
+        up_button_.setVisible(true);
+        argConvGlpara(patterns_[UP].getTrans(), up_button_.getTransMatrix());
+    } else {
+        up_button_.setVisible(false);
+    }
+
+    if(patterns_[DOWN].isVisible()) {
+        down_button_.setVisible(true);
+        argConvGlpara(patterns_[DOWN].getTrans(), down_button_.getTransMatrix());
+    } else {
+        down_button_.setVisible(false);
+    }
 }
 
 void Game::mainLoop() {
@@ -354,15 +372,27 @@ void Game::drawScene() {
         }
     }
 
-    if(rotate_.isVisible()) {
-        rotate_.draw();
-    }
-
+    drawControls();
     drawText();
 
     glDisable(GL_CULL_FACE);
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
+}
+
+void Game::drawControls() {
+
+    if(rotate_.isVisible()) {
+        rotate_.draw();
+    }
+
+    if(up_button_.isVisible()) {
+        up_button_.draw();
+    }
+
+    if(down_button_.isVisible()) {
+        down_button_.draw();
+    }
 }
 
 void Game::updateAnimations() {

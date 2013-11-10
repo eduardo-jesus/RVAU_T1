@@ -13,6 +13,7 @@
 #include "Hole.h"
 #include "Spikes.h"
 #include "RotateButton.h"
+#include "Arrow.h"
 
 class Game {
 private:
@@ -46,6 +47,8 @@ private:
     Hole hole_;
     Spikes spikes_;
     RotateButton rotate_;
+    Arrow up_button_;
+    Arrow down_button_;
 
     //animation
     int anim_millis_;
@@ -78,6 +81,7 @@ public:
     void drawScene();
     void updateAnimations();
     
+    void drawControls();
     void drawBoard();
     void drawText();
     void writeText(std::string text); 
