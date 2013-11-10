@@ -1,42 +1,44 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 09.11.2013 23:22:47
+# File Created: 10.11.2013 16:38:30
 
-newmtl wire_028089177
-	Ns 32
-	d 1
-	Tr 0
-	Tf 1 1 1
+newmtl Concrete_Material
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
 	illum 2
-	Ka 0.1098 0.3490 0.6941
-	Kd 0.1098 0.3490 0.6941
-	Ks 0.3500 0.3500 0.3500
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka Data\models\concrete.jpg
+	map_Kd Data\models\concrete.jpg
 
-newmtl wire_088088225
-	Ns 32
-	d 1
-	Tr 0
-	Tf 1 1 1
+newmtl Door_Material
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
 	illum 2
-	Ka 0.3451 0.3451 0.8824
-	Kd 0.3451 0.3451 0.8824
-	Ks 0.3500 0.3500 0.3500
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka Data\models\645_stone_tatteredwood.jpg
+	map_Kd Data\models\645_stone_tatteredwood.jpg
 
-newmtl wire_229154215
-	Ns 32
-	d 1
-	Tr 0
-	Tf 1 1 1
+newmtl Roof_Material
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
 	illum 2
-	Ka 0.8980 0.6039 0.8431
-	Kd 0.8980 0.6039 0.8431
-	Ks 0.3500 0.3500 0.3500
-
-newmtl wire_027177148
-	Ns 32
-	d 1
-	Tr 0
-	Tf 1 1 1
-	illum 2
-	Ka 0.1059 0.6941 0.5804
-	Kd 0.1059 0.6941 0.5804
-	Ks 0.3500 0.3500 0.3500
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka Data\models\roof.jpg
+	map_Kd Data\models\roof.jpg
