@@ -414,7 +414,7 @@ void Game::drawRect(double cx, double cy, double width, double height) {
 void Game::drawRect(double cx, double cy, double width, double height, double start_u, double start_v) {
     double end_u = start_u + width / TEX_UNIT_TO_UNIT;
     double end_v = start_v + height / TEX_UNIT_TO_UNIT;
-    
+
     glPushMatrix();
 
     glEnable(GL_TEXTURE_2D);
@@ -444,10 +444,11 @@ void Game::drawRect(double cx, double cy, double width, double height, double st
 
 void Game::drawBoard() {
     board_.draw();
+
     if(!hole_.isVisible()) {
-        //drawRect(board_.getWidth()/2, -board_.getHeight()/2, board_.getWidth(), board_.getHeight());
         double width = board_.getWidth();
         double height = board_.getHeight();
+        //drawRect(board_.getWidth()/2, -board_.getHeight()/2, board_.getWidth(), board_.getHeight());
         drawRect(width/2, -height/2, width, height,0,0);
     } else {
         double width_top_bottom = board_.getWidth();
@@ -466,10 +467,18 @@ void Game::drawBoard() {
         double right_cx = width_left + hole_.getWidth() + width_right/2.0;
         double right_cy = left_cy;
 
-        drawRect(top_cx, top_cy, width_top_bottom, heigth_top);
-        drawRect(bottom_cx, bottom_cy, width_top_bottom, height_down);
-        drawRect(left_cx, left_cy, width_left, height_middle);
-        drawRect(right_cx, right_cy, width_right, height_middle);
+        double sides_v = height_down / TEX_UNIT_TO_UNIT;
+        double right_u = (width_left + hole_.getWidth()) / TEX_UNIT_TO_UNIT;
+        double top_v = (height_down + height_middle) / TEX_UNIT_TO_UNIT;
+
+        //top rect
+        drawRect(top_cx, top_cy, width_top_bottom, heigth_top, 0, top_v);
+        //bottom rect
+        drawRect(bottom_cx, bottom_cy, width_top_bottom, height_down, 0, 0);
+        //left rect
+        drawRect(left_cx, left_cy, width_left, height_middle, 0, sides_v);
+        //right rect
+        drawRect(right_cx, right_cy, width_right, height_middle, right_u, top_v);
 
         hole_.draw();
     }
