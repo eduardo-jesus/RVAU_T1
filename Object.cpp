@@ -204,8 +204,12 @@ void Object::draw() {
 
 }
 
-void Object::update() {
+void Object::update(double elapsed_time) {
 
+}
+
+void Object::setPosition(Vector3 position) {
+    position_ = position;
 }
 
 Vector3 Object::getPosition() {

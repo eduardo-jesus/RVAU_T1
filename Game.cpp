@@ -82,6 +82,7 @@ void Game::loadModels() {
     up_button_.load(base_path + "arrow.obj");
     down_button_.load(base_path + "arrow.obj");
     board_.loadBoardModels(base_path + "tower.obj", base_path + "wall.obj", base_path + "fortress.obj");
+    player_.loadPlayerModels(base_path + "player_body.obj", base_path + "player_arm.obj", base_path + "player_leg.obj");
 
 }
 
@@ -409,7 +410,8 @@ void Game::updateAnimations() {
             }
         }
         else {
-            player_.updatePlayerAnimation(elapsed_time);
+            //player_.updatePlayerAnimation(elapsed_time);
+            player_.update(elapsed_time);
         }
     }
 

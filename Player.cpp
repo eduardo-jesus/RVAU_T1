@@ -15,13 +15,27 @@ Player::Player(void) {
 
     n_deaths_ = 0;
 
-    width_ = 10;
-    height_ = 10;
+    width_ = 3;//10;
+    height_ = 4.8;//10;
+
+    left_arm_.instantiate(Vector3(0,2,6.8), 20, 0, true);
+    left_leg_.instantiate(Vector3(0,2,3.5), 0, 0, false);
+    right_arm_.instantiate(Vector3(0,-2,6.8), -20, 0, false);
+    right_leg_.instantiate(Vector3(0,-2,3.5), 0, 0, true);
+
 }
 
 
 Player::~Player() {
 
+}
+
+void Player::loadPlayerModels(std::string body, std::string arm, std::string leg) {
+    load(body);
+    left_arm_.load(arm);
+    right_arm_.load(arm);
+    left_leg_.load(leg);
+    right_leg_.load(leg);
 }
 
 void Player::setMovingUp(bool moving_up) {
@@ -51,10 +65,15 @@ bool Player::isAlive() {
 void Player::draw() {
     glPushMatrix();
 
-    glTranslated(position_.x, position_.y, 10);
-    glScaled(10,10,20);
-    glutSolidCube(1);
-    //render();
+    glTranslated(position_.x, position_.y, 0);
+    //glScaled(10,10,20);
+    //glutSolidCube(1);
+    
+    left_arm_.draw();
+    left_leg_.draw();
+    right_arm_.draw();
+    right_leg_.draw();
+    render();
 
     glPopMatrix();
 }
@@ -71,6 +90,14 @@ void Player::updatePlayerAnimation(double elapsed_time) {
     }
 
     moving_up_ = moving_down_ = false;
+}
+
+void Player::update(double elapsed_time) {
+    updatePlayerAnimation(elapsed_time);
+    left_arm_.update(elapsed_time);
+    left_leg_.update(elapsed_time);
+    right_arm_.update(elapsed_time);
+    right_leg_.update(elapsed_time);
 }
 
 void Player::respawn(double x, double y) {

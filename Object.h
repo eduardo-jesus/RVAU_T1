@@ -24,7 +24,7 @@ public:
     void applyMaterial(std::string name);
 
     virtual void draw() = 0;
-    void update();
+    virtual void update(double elapsed_time);
     virtual CollisionBox getCollisionBox();
 
     void setPosition(Vector3 position);
