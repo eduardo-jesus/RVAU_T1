@@ -75,6 +75,7 @@ void Game::loadModels() {
     spikes_.load(base_path + "spikes.obj");
     hole_.load(base_path + "hole.obj");
     rotate_.load(base_path + "rotate.obj");
+    board_.loadBoardModels(base_path + "tower.obj", base_path + "wall.obj", base_path + "fortress.obj");
 }
 
 bool Game::grabVideoFrame() {
@@ -419,6 +420,7 @@ void Game::drawRect(double cx, double cy, double width, double height) {
 }
 
 void Game::drawBoard() {
+    board_.draw();
     if(!hole_.isVisible()) {
         drawRect(board_.getWidth()/2, -board_.getHeight()/2, board_.getWidth(), board_.getHeight());
     } else {
