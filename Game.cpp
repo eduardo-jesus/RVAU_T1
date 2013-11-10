@@ -18,7 +18,7 @@ Game::Game(int window_width, int window_height) {
     hole_ = Hole(0,0,40,40,100);
     spikes_ = Spikes(0,0,40,40);
 
-    floor_material_.texture = Texture();
+    floor_material_.texture = Texture("Data/models/ground.jpg");
     floor_material_.has_texture = true;
 }
 
@@ -83,13 +83,13 @@ void Game::loadModels() {
 
 bool Game::grabVideoFrame() {
     if ((data_ptr_ = (ARUint8 *)arVideoGetImage()) == NULL) {
-         if(data_ptr_backup_ != NULL) {
+        if(data_ptr_backup_ != NULL) {
             data_ptr_ = data_ptr_backup_; 
-         } else {
+        } else {
             return false;
-         }
+        }
     } else {
-       data_ptr_backup_ = data_ptr_ ; 
+        data_ptr_backup_ = data_ptr_ ; 
     }
 
     return true;
@@ -275,7 +275,7 @@ void Game::mainLoop() {
     drawScene();
 
     resetVisiblePatterns();
-    
+
     argSwapBuffers();
 }
 
@@ -396,17 +396,6 @@ void Game::updateAnimations() {
     previous_clock_ = current_clock;
 }
 
-void Game::drawRect(double x, double y, double gl_para[16]) {
-
-    glBegin(GL_POLYGON);
-    glNormal3d(0,0,1);
-    glVertex3d(0,0,0);
-    glVertex3d(0,y,0);
-    glVertex3d(x,y,0);
-    glVertex3d(x,0,0);
-    glEnd();
-}
-
 void Game::drawRect(double cx, double cy, double width, double height) {
     glPushMatrix();
 
@@ -422,10 +411,44 @@ void Game::drawRect(double cx, double cy, double width, double height) {
     glPopMatrix();
 }
 
+void Game::drawRect(double cx, double cy, double width, double height, double start_u, double start_v) {
+    double end_u = start_u + width / TEX_UNIT_TO_UNIT;
+    double end_v = start_v + height / TEX_UNIT_TO_UNIT;
+    
+    glPushMatrix();
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, floor_material_.texture.id);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, floor_material_.ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, floor_material_.diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, floor_material_.specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, floor_material_.shininess);
+
+    glTranslated(cx, cy, 0);
+    glBegin(GL_POLYGON);
+    glNormal3d(0,0,1);
+    glTexCoord2d(end_u, end_v);
+    glVertex3d(width/2.0,height/2.0,0);
+    glTexCoord2d(start_u, end_v);
+    glVertex3d(-width/2.0,height/2.0,0);
+    glTexCoord2d(start_u, start_v);
+    glVertex3d(-width/2.0,-height/2.0,0);
+    glTexCoord2d(end_u, start_v);
+    glVertex3d(width/2.0,-height/2.0,0);
+    glEnd();
+    glPopMatrix();
+}
+
 void Game::drawBoard() {
     board_.draw();
     if(!hole_.isVisible()) {
-        drawRect(board_.getWidth()/2, -board_.getHeight()/2, board_.getWidth(), board_.getHeight());
+        //drawRect(board_.getWidth()/2, -board_.getHeight()/2, board_.getWidth(), board_.getHeight());
+        double width = board_.getWidth();
+        double height = board_.getHeight();
+        drawRect(width/2, -height/2, width, height,0,0);
     } else {
         double width_top_bottom = board_.getWidth();
         double width_left = hole_.getPosition().x - hole_.getWidth()/2.0;
@@ -459,20 +482,20 @@ void Game::writeText(std::string text) {
 }
 
 void Game::drawText(){
-	glDisable(GL_LIGHTING);
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
+    glDisable(GL_LIGHTING);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
     gluOrtho2D(0,window_width_,0,window_height_);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	glColor3f(1.0,1.0,1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glColor3f(1.0,1.0,1.0);
     glRasterPos2f(10,window_height_-30);
-	
+
     std::stringstream ss;
     ss << "Number of Deaths: " << player_.getNDeaths();
-	writeText(ss.str());
+    writeText(ss.str());
 
     if(isFinished()) {
         char *finished_message = "FINISH";
@@ -481,17 +504,17 @@ void Game::drawText(){
 
         // 18pt -> 24 px
         glRasterPos2f(window_width_/2 - message_length / 2, window_height_ / 2 + 12 );
-        
+
         ss.str("");
         ss << finished_message;
 
         writeText(ss.str());
     }
-	
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_LIGHTING);
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glEnable(GL_LIGHTING);
 }
 
 void Game::setFinished(bool finished) {
