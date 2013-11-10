@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Object.h"
 #include "Player.h"
 #include "Wall.h"
@@ -34,6 +36,8 @@ public:
     bool isOnBoard(double x, double y);
     bool isOnBoard(Object* o);
     bool hasPlayerFinished(Player player);
+
+    void loadBoardModels(std::string tower_model, std::string wall_model, std::string fortress_model);
 
     void draw();
     void drawWalls();

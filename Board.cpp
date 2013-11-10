@@ -60,6 +60,8 @@ bool Board::hasPlayerFinished(Player player) {
 }
 
 void Board::draw() {
+    drawTowers();
+    drawWalls();
 }
 
 void Board::drawTowers() {
@@ -84,48 +86,68 @@ void Board::drawTowers() {
 }
 
 void Board::drawWalls() {
-    int width = (int) width_;
-    int height = (int) height_;
+    int horizontal_steps = width_ / 10;
+    int vertical_steps = height_ / 10;
 
     double delta_x;
     double delta_y;
 
-    double wall_bottom_y = -height_ - .5;
+    double wall_bottom_y = -height_ - 5;
+    double wall_right_x = width_ + 5;
+     
+    for(int i = 0; i < horizontal_steps; ++i) {
+        delta_x = 10 * i + 5;
+        
+        glPushMatrix();
+        glTranslated(delta_x, 5, 0);
+        wall_.render();
+        glPopMatrix();
+
+        glPushMatrix();
+        glTranslated(delta_x, wall_bottom_y, 0);
+        wall_.render();
+        glPopMatrix();
+    }
     
-    for(int i = 1; i <= width; ++i) {
-        delta_x = 0.5 * i;
+    for(int i = 0; i < vertical_steps; ++i) {
+        delta_y = -10 * i + 5;
         
         glPushMatrix();
-        glTranslated(0.5 * i, 0.5, 0);
-        wall_.render();
-        glPopMatrix();
-
-        glPushMatrix();
-        glTranslated(0.5 * i, wall_bottom_y, 0);
+        glTranslated(-5, delta_y, 0);
         wall_.render();
         glPopMatrix();
     }
 
-    for(int i = 1; i <= width; ++i) {
-        delta_x = 0.5 * i;
+    double right_vertical_steps = vertical_steps / 2 - 1;
+    for(int i = 0; i < right_vertical_steps; ++i) {
+        delta_y = -10 * i - 5;
         
         glPushMatrix();
-        glTranslated(delta_x, 0.5, 0);
-        wall_.render();
-        glPopMatrix();
-
-        glPushMatrix();
-        glTranslated(0.5 * i, wall_bottom_y, 0);
+        glTranslated(wall_right_x, delta_y, 0);
         wall_.render();
         glPopMatrix();
     }
 
-    for(int i = 1; i <= height; ++i) {
-        delta_y = -0.5 * i;
+    --right_vertical_steps;
+    double right_second_segment_y = - right_vertical_steps * 10 - 40 - 5;
+    for(int i = 0; i < right_vertical_steps; ++i) {
+        delta_y = -10 * i + right_second_segment_y;
         
         glPushMatrix();
-        glTranslated(-0.5, delta_y, 0);
+        glTranslated(wall_right_x, delta_y, 0);
         wall_.render();
         glPopMatrix();
     }
+
+    double fortress_y = - floor(height_ / 2);
+    glPushMatrix();
+    glTranslated(width_, fortress_y, 0);
+    fortress_.render();
+    glPopMatrix();
+}
+
+void Board::loadBoardModels(std::string tower_model, std::string wall_model, std::string fortress_model) {
+    tower_.load(tower_model);
+    wall_.load(wall_model);
+    fortress_.load(fortress_model);
 }
