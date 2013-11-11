@@ -12,7 +12,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9A12718E-D754-4F37-AA95-77DF0679878E}</ProjectGuid>
-    <RootNamespace>ArTest</RootNamespace>
+    <RootNamespace>FortressAR</RootNamespace>
+    <ProjectName>FortressAR</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
