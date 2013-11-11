@@ -4,7 +4,6 @@
 #include <vector>
 
 #include <gl/glew.h>
-//#include <gl/glut.h>
 
 #include "tiny_obj_loader.hpp"
 
@@ -101,50 +100,6 @@ void Object::load(std::string filename) {
             triangles_.push_back(triangle);
         }
     }
-
-    //toVBOs();
-}
-
-void Object::toVBOs() {
-    VBO vbo;
-    vbo.vertices = 0;
-    
-    vbo.material = triangles_[0].material; 
-    std::string last_material = vbo.material;
-    for (size_t i = 0; i < triangles_.size(); ++i) {
-        // If current triangle belongs to other shape than previous one,
-        // upload current vertex data and generate new VBO.
-        if (triangles_[i].material != last_material) {
-            glGenBuffers(1, &vbo.id);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
-            glBufferData(GL_ARRAY_BUFFER, vbo.data.size() * sizeof(double), &vbo.data[0], GL_STATIC_DRAW);
-            vbos_.push_back(vbo);
-
-            vbo = VBO();
-            vbo.vertices = 0;
-            vbo.material = triangles_[i].material;
-            last_material = vbo.material;
-        }
-        for (int j = 0; j < 3; ++j) {
-            vbo.data.push_back(triangles_[i].vertices[j].x);
-            vbo.data.push_back(triangles_[i].vertices[j].y);
-            vbo.data.push_back(triangles_[i].vertices[j].z);
-
-            vbo.data.push_back(triangles_[i].normals[j].x);
-            vbo.data.push_back(triangles_[i].normals[j].y);
-            vbo.data.push_back(triangles_[i].normals[j].z);
-
-            vbo.data.push_back(triangles_[i].uvws[j].x);
-            vbo.data.push_back(triangles_[i].uvws[j].y);
-
-            ++vbo.vertices;
-        }
-    }
-    glGenBuffers(1, &vbo.id);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
-    glBufferData(GL_ARRAY_BUFFER, vbo.data.size() * sizeof(double), &vbo.data[0], GL_STATIC_DRAW);
-
-    vbos_.push_back(vbo);
 }
 
 void Object::render() {
@@ -269,47 +224,23 @@ CollisionBox Object::getCollisionBox() {
 }
 
 bool Object::isCollidingWith(Object* obj) {
-    // http://lazyfoo.net/SDL_tutorials/lesson17/
-
     CollisionBox a = getCollisionBox();
     CollisionBox b = obj->getCollisionBox();
 
-    //The sides of the rectangles
-    /*double left_A, left_B;
-    double right_A, right_B;
-    double top_A, top_B;
-    double bottom_A, bottom_B;
-
-    //Calculate the sides of rect A
-    left_A = position_.x;
-    right_A = left_A + width_;
-    top_A = position_.y;
-    bottom_A = top_A - height_;
-        
-    //Calculate the sides of rect B
-    left_B = obj->getX();
-    right_B = left_B + obj->getWidth();
-    top_B = obj->getY();
-    bottom_B = top_B - obj->getHeight;*/
-
     //If any of the sides from A are outside of B
-    if(a.bottom >= b.top)
-    {
+    if(a.bottom >= b.top)     {
         return false;
     }
     
-    if(a.top <= b.bottom)
-    {
+    if(a.top <= b.bottom) {
         return false;
     }
     
-    if(a.right <= b.left)
-    {
+    if(a.right <= b.left) {
         return false;
     }
     
-    if(a.left >= b.right)
-    {
+    if(a.left >= b.right) {
         return false;
     }
    
@@ -318,27 +249,22 @@ bool Object::isCollidingWith(Object* obj) {
 }
 
 bool Object::isCollidingWith(CollisionBox box) {
-
     CollisionBox a = getCollisionBox();
     CollisionBox b = box;
 
-    if(a.bottom >= b.top)
-    {
+    if(a.bottom >= b.top) {
         return false;
     }
     
-    if(a.top <= b.bottom)
-    {
+    if(a.top <= b.bottom) {
         return false;
     }
     
-    if(a.right <= b.left)
-    {
+    if(a.right <= b.left) {
         return false;
     }
     
-    if(a.left >= b.right)
-    {
+    if(a.left >= b.right) {
         return false;
     }
 

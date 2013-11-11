@@ -58,9 +58,6 @@ protected:
     std::string last_used_material_;
     
     std::vector<Triangle> triangles_;
-    std::vector<VBO> vbos_;
-
-   
 
     Vector3 position_;
     Vector3 scale_;

@@ -77,11 +77,6 @@ void initialize(int argc, char **argv, int *window_width, int *window_height) {
         fprintf(stderr, "Error: %s\n", glewGetErrorString(res));
     }
 
-    // Establish array contains vertices, normals and texture coordinates
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
     GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
     GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
     GLfloat   mat_flash_shiny[] = {50.0};

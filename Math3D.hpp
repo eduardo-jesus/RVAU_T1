@@ -51,11 +51,4 @@ struct Triangle {
     std::string material;
 };
 
-struct VBO {
-    GLuint id;
-    int vertices;
-    std::vector<double> data;
-    std::string material;
-};
-
 #endif /* _MATH3D_ */
